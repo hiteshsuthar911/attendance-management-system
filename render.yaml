@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: college-attendance-system
+    name: attendance-management-system
     env: node
     buildCommand: npm install
     startCommand: npm start
@@ -8,8 +8,8 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        sync: false
+        value: mongodb+srv://hiteshsutharvfx_db_user:5O2u6aMsbtcrHXnf@cluster0.eaa6hyq.mongodb.net/attendance_system?retryWrites=true&w=majority&appName=Cluster0
       - key: JWT_SECRET
-        sync: false
+        value: super_secret_jwt_key_tcet_attendance_2026_production_secure_token
       - key: MASTER_RESET_PASSWORD
         value: RESET@2026
