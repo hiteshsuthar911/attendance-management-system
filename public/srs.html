@@ -23,14 +23,15 @@
       line-height: 1.6;
       color: var(--text);
       background: #e2e8f0;
-      padding: 30px 15px;
+      padding: 20px 12px;
+      min-height: 100vh;
     }
 
     .srs-container {
       max-width: 1000px;
       margin: 0 auto;
       background: #ffffff;
-      padding: 50px 60px;
+      padding: clamp(20px, 4vw, 50px);
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border);
@@ -42,13 +43,15 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 3px solid var(--primary);
-      padding-bottom: 20px;
-      margin-bottom: 30px;
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      gap: 16px;
     }
 
     .srs-logo {
-      height: 70px;
+      height: 65px;
       width: auto;
+      object-fit: contain;
     }
 
     .srs-doc-title {
@@ -56,7 +59,7 @@
     }
 
     .srs-doc-title h1 {
-      font-size: 24px;
+      font-size: clamp(18px, 2.5vw, 24px);
       font-weight: 800;
       color: var(--primary);
       text-transform: uppercase;
@@ -75,23 +78,27 @@
       gap: 12px;
       margin-bottom: 30px;
       background: #f1f5f9;
-      padding: 14px 20px;
+      padding: 12px 18px;
       border-radius: 8px;
       border: 1px solid var(--border);
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .btn-action {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       font-family: inherit;
       font-size: 13.5px;
       font-weight: 700;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 6px;
       cursor: pointer;
       border: none;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .btn-primary { background: var(--accent); color: white; }
@@ -105,7 +112,7 @@
     }
 
     h2 {
-      font-size: 18px;
+      font-size: clamp(16px, 2.2vw, 18px);
       font-weight: 800;
       color: var(--primary);
       border-bottom: 1.5px solid var(--border);
@@ -116,7 +123,7 @@
     }
 
     h3 {
-      font-size: 15px;
+      font-size: clamp(14px, 1.8vw, 15px);
       font-weight: 700;
       color: var(--text);
       margin-top: 18px;
@@ -130,17 +137,27 @@
     }
 
     ul, ol {
-      padding-left: 22px;
+      padding-left: 20px;
       margin-bottom: 14px;
     }
 
-    /* Data Tables */
+    /* Data Tables & Responsive Wrapper */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-block: 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
     table {
       width: 100%;
+      min-width: 550px;
       border-collapse: collapse;
       font-size: 13px;
-      margin-block: 16px;
       background: #ffffff;
+      margin: 0;
     }
 
     th {
@@ -167,6 +184,29 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 12.5px;
+      word-break: break-word;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 768px) {
+      .srs-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .srs-doc-title {
+        text-align: center;
+      }
+
+      .srs-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-action {
+        width: 100%;
+      }
     }
 
     /* Print Overrides */
@@ -175,7 +215,8 @@
       .srs-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
       .srs-actions { display: none !important; }
       h2 { page-break-after: avoid; }
-      table { page-break-inside: avoid; }
+      .table-wrap { overflow: visible; border: none; }
+      table { min-width: 100%; page-break-inside: avoid; }
     }
   </style>
 </head>
@@ -239,32 +280,34 @@
         </p>
 
         <h3>2.2 User Classes and Roles</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Privileges &amp; Responsibilities</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><b>Superadmin</b></td>
-              <td>Full system governance, department creation, department admin assignment, system directory control, and master data reset.</td>
-            </tr>
-            <tr>
-              <td><b>Department Admin</b></td>
-              <td>Department-scoped management of faculty members, student enrollment, lecture schedules, substitute faculty assignment, and attendance matrix report generation.</td>
-            </tr>
-            <tr>
-              <td><b>Faculty</b></td>
-              <td>Schedule lecture sessions, mark live student attendance (Present/Absent), edit roster sheets, and view subject attendance logs.</td>
-            </tr>
-            <tr>
-              <td><b>Student</b></td>
-              <td>View individual subject attendance logs, track overall percentage performance, and review detailed session dates.</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Privileges &amp; Responsibilities</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Superadmin</b></td>
+                <td>Full system governance, department creation, department admin assignment, system directory control, and master data reset.</td>
+              </tr>
+              <tr>
+                <td><b>Department Admin</b></td>
+                <td>Department-scoped management of faculty members, student enrollment, lecture schedules, substitute faculty assignment, and attendance matrix report generation.</td>
+              </tr>
+              <tr>
+                <td><b>Faculty</b></td>
+                <td>Schedule lecture sessions, mark live student attendance (Present/Absent), edit roster sheets, and view subject attendance logs.</td>
+              </tr>
+              <tr>
+                <td><b>Student</b></td>
+                <td>View individual subject attendance logs, track overall percentage performance, and review detailed session dates.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h3>2.3 Operating Environment</h3>
         <ul>
@@ -318,54 +361,56 @@
         </ul>
 
         <h3>4.2 Key REST API Endpoints</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Endpoint</th>
-              <th>Access Role</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>POST</code></td>
-              <td><code>/api/auth/login-step1</code></td>
-              <td>Public</td>
-              <td>Validate email/password and issue temporary security token.</td>
-            </tr>
-            <tr>
-              <td><code>POST</code></td>
-              <td><code>/api/auth/verify-security</code></td>
-              <td>Public</td>
-              <td>Verify 6-digit security code and issue JWT access token.</td>
-            </tr>
-            <tr>
-              <td><code>GET</code></td>
-              <td><code>/api/lectures</code></td>
-              <td>Authenticated</td>
-              <td>Fetch scoped lecture sessions.</td>
-            </tr>
-            <tr>
-              <td><code>POST</code></td>
-              <td><code>/api/attendance/mark</code></td>
-              <td>Faculty</td>
-              <td>Submit live attendance roster records.</td>
-            </tr>
-            <tr>
-              <td><code>GET</code></td>
-              <td><code>/api/reports/monthly-matrix</code></td>
-              <td>Admin</td>
-              <td>Generate monthly matrix data sheet.</td>
-            </tr>
-            <tr>
-              <td><code>POST</code></td>
-              <td><code>/api/system/reset</code></td>
-              <td>Superadmin</td>
-              <td>Execute protected data reset operations.</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Endpoint</th>
+                <th>Access Role</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/auth/login-step1</code></td>
+                <td>Public</td>
+                <td>Validate email/password and issue temporary security token.</td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/auth/verify-security</code></td>
+                <td>Public</td>
+                <td>Verify 6-digit security code and issue JWT access token.</td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/lectures</code></td>
+                <td>Authenticated</td>
+                <td>Fetch scoped lecture sessions.</td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/attendance/mark</code></td>
+                <td>Faculty</td>
+                <td>Submit live attendance roster records.</td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/reports/monthly-matrix</code></td>
+                <td>Admin</td>
+                <td>Generate monthly matrix data sheet.</td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/system/reset</code></td>
+                <td>Superadmin</td>
+                <td>Execute protected data reset operations.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Section 5 -->
@@ -401,42 +446,15 @@
 
           try {
             const htmlContent = document.getElementById('srsContentArea').innerHTML;
-            
-            // Convert HTML to pdfmake JSON payload using html-to-pdfmake
             const val = htmlToPdfmake(htmlContent);
 
             const docDefinition = {
               content: val,
               pageSize: 'A4',
               pageMargins: [40, 50, 40, 50],
-              defaultStyle: {
-                font: 'Roboto'
-              },
-              styles: {
-                html_h2: {
-                  color: '#1e3a8a',
-                  bold: true,
-                  marginTop: 15,
-                  marginBottom: 8
-                },
-                html_h3: {
-                  color: '#0f172a',
-                  bold: true,
-                  marginTop: 10,
-                  marginBottom: 6
-                },
-                html_table: {
-                  marginBottom: 12
-                },
-                html_th: {
-                  fillColor: '#f1f5f9',
-                  bold: true,
-                  color: '#1e3a8a'
-                }
-              }
+              defaultStyle: { font: 'Roboto' }
             };
 
-            // Generate and download PDF via pdfmake
             pdfMake.createPdf(docDefinition).download('TCET_Attendance_System_SRS_Document.pdf');
 
             if (msg) {

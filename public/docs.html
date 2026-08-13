@@ -32,7 +32,7 @@
     header.docs-header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
-      padding: 20px 40px;
+      padding: 18px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -49,8 +49,9 @@
     }
 
     .docs-logo {
-      height: 50px;
+      height: 48px;
       width: auto;
+      object-fit: contain;
     }
 
     .docs-title-text h1 {
@@ -75,7 +76,7 @@
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
-      padding: 9px 18px;
+      padding: 9.5px 18px;
       border-radius: 8px;
       cursor: pointer;
       border: 1px solid var(--border);
@@ -85,6 +86,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
     .btn-primary { background: var(--accent); color: #ffffff; border-color: var(--accent); }
@@ -99,6 +101,16 @@
       background: #ffffff;
       border-bottom: 1px solid var(--border);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .doc-nav-tabs::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .doc-nav-tabs::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
     }
 
     .nav-tab {
@@ -111,6 +123,7 @@
       white-space: nowrap;
       transition: all 0.15s ease;
       user-select: none;
+      flex-shrink: 0;
     }
 
     .nav-tab:hover {
@@ -134,7 +147,7 @@
     .doc-card {
       background: #ffffff;
       border-radius: 14px;
-      padding: 45px 55px;
+      padding: clamp(20px, 4vw, 45px);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border);
       display: none;
@@ -146,7 +159,7 @@
 
     /* Document Typography */
     .doc-card h2 {
-      font-size: 22px;
+      font-size: clamp(18px, 2.5vw, 22px);
       font-weight: 800;
       color: var(--primary);
       border-bottom: 2px solid var(--border);
@@ -157,7 +170,7 @@
     }
 
     .doc-card h3 {
-      font-size: 16px;
+      font-size: clamp(14.5px, 2vw, 16px);
       font-weight: 800;
       color: #0f172a;
       margin-top: 24px;
@@ -179,7 +192,7 @@
     }
 
     ul, ol {
-      padding-left: 24px;
+      padding-left: 22px;
       margin-bottom: 18px;
     }
 
@@ -190,15 +203,26 @@
       background: var(--accent-light);
       padding: 2px 6px;
       border-radius: 4px;
+      word-break: break-word;
     }
 
-    /* Tables */
+    /* Tables & Responsive Wrapper */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-block: 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
     table {
       width: 100%;
+      min-width: 600px;
       border-collapse: collapse;
       font-size: 13.5px;
-      margin-block: 20px;
       background: #ffffff;
+      margin: 0;
     }
 
     th {
@@ -218,7 +242,7 @@
       color: #334155;
     }
 
-    /* Visual Box Cards */
+    /* Visual Box Cards & Code Diagrams */
     .info-box {
       background: #f8fafc;
       border-left: 4px solid var(--accent);
@@ -231,20 +255,92 @@
       background: #0f172a;
       color: #38bdf8;
       font-family: 'Courier New', monospace;
-      padding: 20px;
+      padding: 18px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: clamp(10.5px, 1.8vw, 13px);
       line-height: 1.5;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       margin-block: 20px;
       white-space: pre;
     }
 
+    /* Responsive Breakpoints */
+    @media (max-width: 992px) {
+      header.docs-header {
+        padding: 16px 24px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+
+      .docs-brand {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+
+      .doc-nav-tabs {
+        padding: 10px 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header.docs-header {
+        padding: 14px 16px;
+      }
+
+      .docs-brand {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .docs-logo {
+        height: 42px;
+      }
+
+      .docs-title-text h1 {
+        font-size: 17px;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .header-actions .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px;
+      }
+
+      .doc-nav-tabs {
+        gap: 4px;
+        padding: 8px 12px;
+      }
+
+      .nav-tab {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      main.docs-body {
+        margin: 16px auto;
+        padding: 0 10px 40px 10px;
+      }
+    }
+
+    /* Print Overrides */
     @media print {
       header.docs-header, .doc-nav-tabs, .header-actions { display: none !important; }
       body { background: white; }
       main.docs-body { max-width: 100%; margin: 0; padding: 0; }
       .doc-card { display: block !important; box-shadow: none; border: none; padding: 0; margin-bottom: 40px; page-break-after: always; }
+      .table-wrap { overflow: visible; border: none; }
+      table { min-width: 100%; }
     }
   </style>
 </head>
@@ -306,20 +402,22 @@
       </ul>
 
       <h3>1.4 Core Product Features</h3>
-      <table>
-        <thead>
-          <tr><th>Feature Module</th><th>Description</th><th>Priority</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Role-Based Access Control</td><td>Strict RBAC for Superadmin, Admin, Faculty, and Student roles with JWT token authorization.</td><td>P0 (Critical)</td></tr>
-          <tr><td>Live Roster Marking</td><td>Interactive radio controls with 1-click "Mark All Present" &amp; "Mark All Absent" options.</td><td>P0 (Critical)</td></tr>
-          <tr><td>Monthly Matrix Engine</td><td>Generates 28-column monthly attendance sheets with A3 Landscape PDF export capability.</td><td>P0 (Critical)</td></tr>
-          <tr><td>Substitute Management</td><td>Re-assign substitute faculties to conducted sessions when primary faculties are unavailable.</td><td>P1 (High)</td></tr>
-          <tr><td>Custom Signature Editor</td><td>7-slot customizable signature header, designation, and remark customizer with live 2-way sync.</td><td>P1 (High)</td></tr>
-          <tr><td>Native Android App</td><td>Capacitor mobile wrapper enabling native Android APK installation with custom splash screen.</td><td>P1 (High)</td></tr>
-          <tr><td>Master System Reset</td><td>Password-protected security reset portal with selective data wipe options.</td><td>P1 (High)</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Feature Module</th><th>Description</th><th>Priority</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Role-Based Access Control</td><td>Strict RBAC for Superadmin, Admin, Faculty, and Student roles with JWT token authorization.</td><td>P0 (Critical)</td></tr>
+            <tr><td>Live Roster Marking</td><td>Interactive radio controls with 1-click "Mark All Present" &amp; "Mark All Absent" options.</td><td>P0 (Critical)</td></tr>
+            <tr><td>Monthly Matrix Engine</td><td>Generates 28-column monthly attendance sheets with A3 Landscape PDF export capability.</td><td>P0 (Critical)</td></tr>
+            <tr><td>Substitute Management</td><td>Re-assign substitute faculties to conducted sessions when primary faculties are unavailable.</td><td>P1 (High)</td></tr>
+            <tr><td>Custom Signature Editor</td><td>7-slot customizable signature header, designation, and remark customizer with live 2-way sync.</td><td>P1 (High)</td></tr>
+            <tr><td>Native Android App</td><td>Capacitor mobile wrapper enabling native Android APK installation with custom splash screen.</td><td>P1 (High)</td></tr>
+            <tr><td>Master System Reset</td><td>Password-protected security reset portal with selective data wipe options.</td><td>P1 (High)</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <h3>1.5 Key Success Metrics (KPIs)</h3>
       <ul>
@@ -462,21 +560,23 @@
       </div>
 
       <h3>5.3 Complete API Endpoint Specification</h3>
-      <table>
-        <thead>
-          <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><code>POST</code></td><td><code>/api/auth/login-step1</code></td><td>Public</td><td>Step 1 login verification.</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/auth/verify-security</code></td><td>Public</td><td>Step 2 security code verification &amp; token issuance.</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/users</code></td><td>Admin</td><td>Fetch user list filtered by role &amp; department.</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/lectures</code></td><td>Admin/Faculty</td><td>Schedule new lecture session with time slot.</td></tr>
-          <tr><td><code>PUT</code></td><td><code>/api/lectures/:id/substitute</code></td><td>Admin</td><td>Assign/update substitute faculty.</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/attendance/mark</code></td><td>Faculty</td><td>Submit live student attendance roster.</td></tr>
-          <tr><td><code>GET</code></td><td><code>/api/reports/monthly-matrix</code></td><td>Admin</td><td>Fetch 28-column monthly matrix data.</td></tr>
-          <tr><td><code>POST</code></td><td><code>/api/system/reset</code></td><td>Superadmin</td><td>Execute password-protected database reset.</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>POST</code></td><td><code>/api/auth/login-step1</code></td><td>Public</td><td>Step 1 login verification.</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/verify-security</code></td><td>Public</td><td>Step 2 security code verification &amp; token issuance.</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/users</code></td><td>Admin</td><td>Fetch user list filtered by role &amp; department.</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/lectures</code></td><td>Admin/Faculty</td><td>Schedule new lecture session with time slot.</td></tr>
+            <tr><td><code>PUT</code></td><td><code>/api/lectures/:id/substitute</code></td><td>Admin</td><td>Assign/update substitute faculty.</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/attendance/mark</code></td><td>Faculty</td><td>Submit live student attendance roster.</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/reports/monthly-matrix</code></td><td>Admin</td><td>Fetch 28-column monthly matrix data.</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/system/reset</code></td><td>Superadmin</td><td>Execute protected data reset operations.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- DOCUMENT 6: PM & DEPLOYMENT -->
