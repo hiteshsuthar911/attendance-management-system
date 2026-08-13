@@ -15,7 +15,7 @@
       <a href="/superadmin/departments.html">Manage Departments</a>
       <a href="/superadmin/admins.html">Manage Admins</a>
       <a href="/superadmin/directory.html">Faculties &amp; Students Directory</a>
-      <a href="/superadmin/reset.html"><b>🔒 System Data Reset</b></a>
+      <a href="/superadmin/reset.html"><b> System Data Reset</b></a>
       <button id="logoutBtn" type="button">Logout</button>
     </nav>
   </header>
@@ -23,7 +23,7 @@
   <main>
     <!-- Password Unlock Box -->
     <div id="passwordGateBox" class="card" style="max-width: 520px; margin: 40px auto; text-align: center;">
-      <div style="font-size: 36px; margin-bottom: 8px;">🔒</div>
+      <div style="font-size: 36px; margin-bottom: 8px;"></div>
       <div class="card-title" style="border: none; margin-bottom: 8px; font-size: 18px;">Security Reset Password Required</div>
       <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">
         To access the System Data Reset controls, enter the Master Reset Password (<code>RESET@2026</code>) or your Superadmin account password.
@@ -43,7 +43,7 @@
 
     <!-- Protected Reset Panel (Hidden until unlocked) -->
     <div id="resetControlsCard" class="card" style="display: none;">
-      <div class="card-title">⚠️ System Data Reset &amp; Cleanup Management</div>
+      <div class="card-title"> System Data Reset &amp; Cleanup Management</div>
       <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 13.5px;">
         Perform targeted or full database cleanups. Select an option below, re-verify password, and type <b>RESET</b> to confirm execution.
       </p>
@@ -80,7 +80,7 @@
           <label class="reset-option-card" style="display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--danger-light); border: 1.5px solid var(--danger-border); border-radius: var(--radius-md); cursor: pointer;">
             <input type="radio" name="resetType" value="full_system" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--danger);">
             <div>
-              <b style="font-size: 14px; color: var(--danger-hover);">🔥 MASTER WIPE: Full System Reset (Factory Reset)</b>
+              <b style="font-size: 14px; color: var(--danger-hover);"> MASTER WIPE: Full System Reset (Factory Reset)</b>
               <p style="font-size: 12.5px; color: #991b1b; margin-top: 2px;">Wipes all attendance logs, lectures, departments, faculty members, students, and department admins. Only Superadmin is preserved.</p>
             </div>
           </label>
@@ -99,7 +99,7 @@
         </div>
 
         <div>
-          <button type="submit" id="executeResetBtn" style="background: var(--danger); color: white; border-color: var(--danger); font-size: 14px; padding: 12px 24px;"><b>⚠️ Execute System Reset</b></button>
+          <button type="submit" id="executeResetBtn" style="background: var(--danger); color: white; border-color: var(--danger); font-size: 14px; padding: 12px 24px;"><b> Execute System Reset</b></button>
         </div>
       </form>
     </div>

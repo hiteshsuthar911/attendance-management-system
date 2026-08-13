@@ -1,10 +1,10 @@
-# 📱 Native Android App (.APK) Building & Release Guide
+#  Native Android App (.APK) Building & Release Guide
 
 Your **College Attendance Management System** has been converted into a native **Capacitor Android Project**!
 
 ---
 
-## 🛠️ Project Configuration Summary
+## ️ Project Configuration Summary
 
 - **App Name**: `TCET Attendance`
 - **Package ID**: `com.tcet.attendance`
@@ -13,7 +13,7 @@ Your **College Attendance Management System** has been converted into a native *
 
 ---
 
-## 🚀 How to Build & Run the Android App
+##  How to Build & Run the Android App
 
 ### Method 1: Using Android Studio (Recommended for Testing & Play Store)
 
@@ -47,7 +47,7 @@ npx cap sync android
 
 ---
 
-## 📲 App Features on Mobile Devices
+##  App Features on Mobile Devices
 
 - **Native App Icon & Splash Screen**: Opens cleanly as an authentic Android application.
 - **Connected to Production Server**: Logs in, marks attendance, generates reports, and syncs live with MongoDB Cloud.

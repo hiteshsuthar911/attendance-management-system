@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success) {
           if (msg) {
             msg.style.color = '#16a34a';
-            msg.textContent = '✔ Lecture scheduled successfully! Opening attendance sheet...';
+            msg.textContent = ' Lecture scheduled successfully! Opening attendance sheet...';
           }
           createForm.reset();
           setTimeout(() => {

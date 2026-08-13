@@ -1,10 +1,10 @@
-# 🚀 Web App Hosting & Cloud Deployment Guide
+#  Web App Hosting & Cloud Deployment Guide
 
 This guide will walk you through hosting your **College Attendance Management System** online for free using **Render.com**, **Vercel**, or **Railway.app** with **MongoDB Atlas Cloud**.
 
 ---
 
-## 🌟 Method 1: Host on Render.com (Recommended — 100% Free & Easy)
+##  Method 1: Host on Render.com (Recommended — 100% Free & Easy)
 
 [Render.com](https://render.com) is the simplest platform for hosting Node.js + Express apps with automatic HTTPS SSL certificates.
 
@@ -47,7 +47,7 @@ Under the **Environment** tab on Render, add these Environment Variables:
 
 ---
 
-## ⚡ Method 2: Host on Vercel
+##  Method 2: Host on Vercel
 
 1. Install Vercel CLI or connect GitHub on [vercel.com](https://vercel.com).
 2. Run `vercel` in your project terminal:
@@ -62,7 +62,7 @@ Under the **Environment** tab on Render, add these Environment Variables:
 
 ---
 
-## 🚂 Method 3: Host on Railway.app
+##  Method 3: Host on Railway.app
 
 1. Go to [https://railway.app](https://railway.app) and sign in.
 2. Click **New Project** → **Deploy from GitHub repo**.
@@ -72,7 +72,7 @@ Under the **Environment** tab on Render, add these Environment Variables:
 
 ---
 
-## 🔒 Production Credentials & Access Summary
+##  Production Credentials & Access Summary
 
 - **Live URL**: `https://<your-render-subdomain>.onrender.com`
 - **Superadmin Login**: `superadmin@attendance.com` / `superadmin123`

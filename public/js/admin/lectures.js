@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success) {
           if (lectureMsg) {
             lectureMsg.style.color = '#16a34a';
-            lectureMsg.textContent = '✔ Lecture session scheduled successfully!';
+            lectureMsg.textContent = ' Lecture session scheduled successfully!';
           }
           createForm.reset();
           loadFacultiesAndDepts().then(loadLectures);

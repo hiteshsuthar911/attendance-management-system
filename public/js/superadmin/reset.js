@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!resetPassword) {
         if (msg) {
           msg.style.color = '#dc2626';
-          msg.textContent = '❌ Please enter the Master Reset Password.';
+          msg.textContent = ' Please enter the Master Reset Password.';
         }
         return;
       }
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirmText !== 'RESET') {
         if (msg) {
           msg.style.color = '#dc2626';
-          msg.textContent = '❌ Security confirmation failed. You must type RESET in capital letters.';
+          msg.textContent = ' Security confirmation failed. You must type RESET in capital letters.';
         }
         return;
       }
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (msg) {
         msg.style.color = '#2563eb';
-        msg.textContent = '⏳ Executing system cleanup reset...';
+        msg.textContent = ' Executing system cleanup reset...';
       }
 
       try {
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (msg) {
             msg.style.color = '#16a34a';
             msg.innerHTML = `
-              ✔ <b>${data.message}</b><br>
+               <b>${data.message}</b><br>
               Summary of cleared records:
               <ul>
                 <li>Attendance Logs Removed: <b>${s.attendanceCleared}</b></li>

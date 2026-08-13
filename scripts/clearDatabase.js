@@ -17,19 +17,19 @@ async function clearSampleData() {
 
     // 1. Delete all Attendance records
     const attRes = await Attendance.deleteMany({});
-    console.log(`✔ Removed ${attRes.deletedCount} attendance records.`);
+    console.log(` Removed ${attRes.deletedCount} attendance records.`);
 
     // 2. Delete all Lectures
     const lecRes = await Lecture.deleteMany({});
-    console.log(`✔ Removed ${lecRes.deletedCount} lecture sessions.`);
+    console.log(` Removed ${lecRes.deletedCount} lecture sessions.`);
 
     // 3. Delete all Departments
     const deptRes = await Department.deleteMany({});
-    console.log(`✔ Removed ${deptRes.deletedCount} departments.`);
+    console.log(` Removed ${deptRes.deletedCount} departments.`);
 
     // 4. Delete all non-superadmin Users (Admins, Faculty, Students)
     const userRes = await User.deleteMany({ role: { $ne: 'superadmin' } });
-    console.log(`✔ Removed ${userRes.deletedCount} sample user accounts (admins, faculties, students).`);
+    console.log(` Removed ${userRes.deletedCount} sample user accounts (admins, faculties, students).`);
 
     // 5. Ensure Default Superadmin Exists
     let superadmin = await User.findOne({ role: 'superadmin' });
@@ -40,13 +40,13 @@ async function clearSampleData() {
         password: 'superadmin123',
         role: 'superadmin'
       });
-      console.log('✔ Default Superadmin created: superadmin@attendance.com');
+      console.log(' Default Superadmin created: superadmin@attendance.com');
     } else {
-      console.log('✔ Preserved Superadmin: superadmin@attendance.com');
+      console.log(' Preserved Superadmin: superadmin@attendance.com');
     }
 
     console.log('\n======================================================');
-    console.log('🎉 ALL SAMPLE DATA CLEARED SUCCESSFULLY!');
+    console.log(' ALL SAMPLE DATA CLEARED SUCCESSFULLY!');
     console.log('======================================================');
     console.log('Database is now clean and ready for MongoDB Atlas Cloud connection.');
     console.log('Superadmin Login: superadmin@attendance.com / superadmin123');

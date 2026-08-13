@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         await html2pdf().set(opt).from(elem).save();
-        setStatus(`✔ PDF downloaded: ${filename}`);
+        setStatus(` PDF downloaded: ${filename}`);
       } catch (err) {
         console.error('html2pdf error:', err);
         fallbackPrintPDF(filename);

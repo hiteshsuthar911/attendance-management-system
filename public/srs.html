@@ -236,10 +236,10 @@
     <!-- Action Bar for PDF Generation & Printing -->
     <div class="srs-actions">
       <button id="downloadPdfBtn" type="button" class="btn-action btn-primary">
-        <b>📥 Download SRS PDF (pdfmake)</b>
+        <b> Download SRS PDF (pdfmake)</b>
       </button>
       <button onclick="window.print()" type="button" class="btn-action btn-secondary">
-        <b>🖨️ Print SRS Document</b>
+        <b> Print SRS Document</b>
       </button>
       <div id="pdfStatusMsg" style="margin-left: auto; font-size: 13px; font-weight: 600; align-self: center;"></div>
     </div>
@@ -441,7 +441,7 @@
         downloadBtn.addEventListener('click', () => {
           if (msg) {
             msg.style.color = '#2563eb';
-            msg.textContent = '⏳ Compiling SRS PDF with pdfmake & html-to-pdfmake...';
+            msg.textContent = ' Compiling SRS PDF with pdfmake & html-to-pdfmake...';
           }
 
           try {
@@ -459,7 +459,7 @@
 
             if (msg) {
               msg.style.color = '#16a34a';
-              msg.textContent = '✔ SRS PDF downloaded successfully!';
+              msg.textContent = ' SRS PDF downloaded successfully!';
             }
           } catch (err) {
             console.error('Error generating PDF:', err);

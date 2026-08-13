@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success) {
           if (msg) {
             msg.style.color = '#16a34a';
-            msg.textContent = '✔ Attendance successfully recorded and lecture marked completed!';
+            msg.textContent = ' Attendance successfully recorded and lecture marked completed!';
           }
         } else {
           if (msg) {

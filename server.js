@@ -109,8 +109,8 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`=================================================`);
-  console.log(`🚀 Attendance System Server active on port ${PORT}`);
-  console.log(`🔒 Security Headers & 5-Min Auto-Logout Active`);
-  console.log(`🔗 Local URL: http://localhost:${PORT}`);
+  console.log(` Attendance System Server active on port ${PORT}`);
+  console.log(` Security Headers & 5-Min Auto-Logout Active`);
+  console.log(` Local URL: http://localhost:${PORT}`);
   console.log(`=================================================`);
 });

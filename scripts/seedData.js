@@ -54,7 +54,7 @@ async function seedData() {
         for (const idx of idxs) {
           if (idx.name !== '_id_' && (idx.name.includes('id_1') || idx.name.includes('lecture_id'))) {
             await col.dropIndex(idx.name);
-            console.log(`✔ Dropped legacy index ${idx.name} from ${cn}`);
+            console.log(` Dropped legacy index ${idx.name} from ${cn}`);
           }
         }
       } catch (e) {}
@@ -68,7 +68,7 @@ async function seedData() {
         code: 'SD',
         description: 'BACHELOR OF VOCATIONAL (SD) Department'
       });
-      console.log('✔ Department created: Software Development (SD)');
+      console.log(' Department created: Software Development (SD)');
     }
 
     // 2. Create Superadmin
@@ -80,7 +80,7 @@ async function seedData() {
         password: 'superadmin123',
         role: 'superadmin'
       });
-      console.log('✔ Superadmin created: superadmin@attendance.com');
+      console.log(' Superadmin created: superadmin@attendance.com');
     }
 
     // 3. Create Admin
@@ -93,7 +93,7 @@ async function seedData() {
         role: 'admin',
         departments: [dept._id]
       });
-      console.log('✔ Admin created: sdadmin@attendance.com');
+      console.log(' Admin created: sdadmin@attendance.com');
     } else {
       admin.departments = [dept._id];
       await admin.save();
@@ -109,7 +109,7 @@ async function seedData() {
         role: 'faculty',
         departments: [dept._id]
       });
-      console.log('✔ Faculty created: Prof. Shruti Mishra (shrutimishra@attendance.com)');
+      console.log(' Faculty created: Prof. Shruti Mishra (shrutimishra@attendance.com)');
     } else {
       faculty.departments = [dept._id];
       await faculty.save();
@@ -132,7 +132,7 @@ async function seedData() {
             department: dept._id
           }
         });
-        console.log(`✔ Student created: ${s.rollNumber} - ${s.name}`);
+        console.log(` Student created: ${s.rollNumber} - ${s.name}`);
       }
       studentUsers.push(stUser);
     }
@@ -176,7 +176,7 @@ async function seedData() {
       }
     }
 
-    console.log(`✔ Created ${createdLectures.length} lecture sessions across 6 subjects.`);
+    console.log(` Created ${createdLectures.length} lecture sessions across 6 subjects.`);
 
     // 7. Seed Attendance Logs
     let attCount = 0;
@@ -203,11 +203,11 @@ async function seedData() {
       }
     }
 
-    console.log(`✔ Seeded ${attCount} student attendance log entries.`);
+    console.log(` Seeded ${attCount} student attendance log entries.`);
     console.log('\n======================================================');
-    console.log('🎉 SAMPLE DATA SEEDED SUCCESSFULLY!');
+    console.log(' SAMPLE DATA SEEDED SUCCESSFULLY!');
     console.log('======================================================');
-    console.log('🔑 Credentials to test:');
+    console.log(' Credentials to test:');
     console.log('1. Superadmin : superadmin@attendance.com / superadmin123');
     console.log('2. Admin      : sdadmin@attendance.com    / admin123');
     console.log('3. Faculty    : shrutimishra@attendance.com / faculty123');
