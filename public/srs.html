@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software Requirements Specification (SRS) - TCET Attendance System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --accent: #2563eb;
+      --text: #0f172a;
+      --secondary: #475569;
+      --border: #cbd5e1;
+      --bg: #f8fafc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: #e2e8f0;
+      padding: 30px 15px;
+    }
+
+    .srs-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px 60px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+    }
+
+    /* Header Bar */
+    .srs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .srs-logo {
+      height: 70px;
+      width: auto;
+    }
+
+    .srs-doc-title {
+      text-align: right;
+    }
+
+    .srs-doc-title h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+    }
+
+    .srs-doc-title p {
+      font-size: 13px;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    /* Action Bar */
+    .srs-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      background: #f1f5f9;
+      padding: 14px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: #ffffff; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #f8fafc; }
+
+    /* Sections */
+    .srs-section {
+      margin-bottom: 35px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    p, li {
+      font-size: 13.5px;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+
+    /* Data Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-block: 16px;
+      background: #ffffff;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11.5px;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: #334155;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      background: #eff6ff;
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12.5px;
+    }
+
+    /* Print Overrides */
+    @media print {
+      body { background: #ffffff; padding: 0; }
+      .srs-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+      .srs-actions { display: none !important; }
+      h2 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="srs-container">
+    <!-- Top Branding Header -->
+    <div class="srs-header">
+      <img src="/images/tcetlogo.png" alt="TCET Logo" class="srs-logo" onerror="this.style.display='none'">
+      <div class="srs-doc-title">
+        <h1>Software Requirements Specification</h1>
+        <p>College Attendance Management System (v9.0)</p>
+        <p>Thakur College of Engineering &amp; Technology</p>
+      </div>
+    </div>
+
+    <!-- Action Bar for PDF Generation & Printing -->
+    <div class="srs-actions">
+      <button id="downloadPdfBtn" type="button" class="btn-action btn-primary">
+        <b>📥 Download SRS PDF (pdfmake)</b>
+      </button>
+      <button onclick="window.print()" type="button" class="btn-action btn-secondary">
+        <b>🖨️ Print SRS Document</b>
+      </button>
+      <div id="pdfStatusMsg" style="margin-left: auto; font-size: 13px; font-weight: 600; align-self: center;"></div>
+    </div>
+
+    <!-- Document Content Wrapper (Targeted by html-to-pdfmake) -->
+    <div id="srsContentArea">
+      
+      <!-- Section 1 -->
+      <div class="srs-section">
+        <h2>1. Introduction</h2>
+        <h3>1.1 Purpose</h3>
+        <p>
+          This Software Requirements Specification (SRS) document details the complete functional, non-functional, security, and architectural requirements for the <b>College Attendance Management System</b> developed for Thakur College of Engineering &amp; Technology (TCET).
+        </p>
+
+        <h3>1.2 Scope</h3>
+        <p>
+          The system provides an enterprise-grade digital solution replacing paper-based attendance registers with automated session tracking, real-time role-based access control (Superadmin, Department Admin, Faculty, Student), A3 Landscape monthly matrix report generation, customizable signature blanks, and cross-platform native Android mobile execution.
+        </p>
+
+        <h3>1.3 Definitions and Abbreviations</h3>
+        <ul>
+          <li><b>SRS</b>: Software Requirements Specification</li>
+          <li><b>TCET</b>: Thakur College of Engineering &amp; Technology</li>
+          <li><b>2FA</b>: Two-Factor Authentication</li>
+          <li><b>PWA</b>: Progressive Web Application</li>
+          <li><b>HOD</b>: Head of Department</li>
+          <li><b>JWT</b>: JSON Web Token</li>
+        </ul>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="srs-section">
+        <h2>2. Overall Description</h2>
+        <h3>2.1 Product Perspective</h3>
+        <p>
+          The Attendance System operates as a web-based and native Android application backed by a Node.js Express REST API server and a MongoDB Atlas Cloud database cluster.
+        </p>
+
+        <h3>2.2 User Classes and Roles</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Privileges &amp; Responsibilities</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Superadmin</b></td>
+              <td>Full system governance, department creation, department admin assignment, system directory control, and master data reset.</td>
+            </tr>
+            <tr>
+              <td><b>Department Admin</b></td>
+              <td>Department-scoped management of faculty members, student enrollment, lecture schedules, substitute faculty assignment, and attendance matrix report generation.</td>
+            </tr>
+            <tr>
+              <td><b>Faculty</b></td>
+              <td>Schedule lecture sessions, mark live student attendance (Present/Absent), edit roster sheets, and view subject attendance logs.</td>
+            </tr>
+            <tr>
+              <td><b>Student</b></td>
+              <td>View individual subject attendance logs, track overall percentage performance, and review detailed session dates.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>2.3 Operating Environment</h3>
+        <ul>
+          <li><b>Web Client</b>: Modern web browsers (Chrome, Edge, Safari, Firefox).</li>
+          <li><b>Mobile Client</b>: Android 8.0+ (Native APK via Capacitor runtime) and iOS (PWA Safari).</li>
+          <li><b>Backend Runtime</b>: Node.js v18+ with Express framework.</li>
+          <li><b>Database</b>: MongoDB Atlas Cloud Engine (v6.0+).</li>
+        </ul>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="srs-section">
+        <h2>3. System Features &amp; Functional Requirements</h2>
+        
+        <h3>3.1 Multi-Factor Authentication &amp; Security</h3>
+        <p>
+          The system implements a 2-step security verification mechanism. Upon entering valid credentials, users receive a 6-digit security code verification step before gaining JWT-authenticated access. Session auto-logouts trigger after 5 minutes of inactivity.
+        </p>
+
+        <h3>3.2 Lecture Scheduling &amp; Substitute Management</h3>
+        <p>
+          Admins and faculties can schedule lecture sessions with custom or pre-set time slots (e.g. <code>9:30 AM to 11:30 AM</code>). Department Admins can assign substitute faculties to conducted sessions when primary faculties are unavailable.
+        </p>
+
+        <h3>3.3 Attendance Marking &amp; Live Register Sheet</h3>
+        <p>
+          Faculties load student rosters filtered by department, branch (e.g., <code>SD</code>), and batch (e.g., <code>Batch-5</code>). Radio controls allow 1-click <b>Mark All Present</b> and <b>Mark All Absent</b> options with instant database persistence.
+        </p>
+
+        <h3>3.4 Monthly Matrix Attendance Reports &amp; Custom Signatures</h3>
+        <p>
+          Generates 28-column monthly attendance sheets formatted according to institutional standards. Includes a 7-slot customizable signature block editor (Prepared By, Checked By, Verified By, Reviewed By, Approved By, Vice Principal, Principal) supporting live 2-way DOM sync, PDF export (A3 Landscape), and CSV/Excel exports.
+        </p>
+
+        <h3>3.5 Master Data Reset &amp; Cleanup</h3>
+        <p>
+          Superadmins can execute targeted cleanups (Attendance Only, Lectures Only, Users Only) or Master Factory Reset protected by a Master Password (<code>RESET@2026</code>) and capital letter confirmation.
+        </p>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="srs-section">
+        <h2>4. Database Schema &amp; REST API Specification</h2>
+        
+        <h3>4.1 Database Models</h3>
+        <ul>
+          <li><b>User Schema</b>: Stores name, email, hashed password (bcryptjs), role, department array, and student details (roll number, branch, batch).</li>
+          <li><b>Department Schema</b>: Stores degree (BE, BVOC, B.Tech), branch, department name, code, and description.</li>
+          <li><b>Lecture Schema</b>: Stores subject, department, branch, batch, primary faculty, substitute faculty, date, time slot, and status (scheduled, completed, canceled).</li>
+          <li><b>Attendance Schema</b>: Stores lecture ID, student ID, status (present/absent), date, time slot, and marker user reference.</li>
+        </ul>
+
+        <h3>4.2 Key REST API Endpoints</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Access Role</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>POST</code></td>
+              <td><code>/api/auth/login-step1</code></td>
+              <td>Public</td>
+              <td>Validate email/password and issue temporary security token.</td>
+            </tr>
+            <tr>
+              <td><code>POST</code></td>
+              <td><code>/api/auth/verify-security</code></td>
+              <td>Public</td>
+              <td>Verify 6-digit security code and issue JWT access token.</td>
+            </tr>
+            <tr>
+              <td><code>GET</code></td>
+              <td><code>/api/lectures</code></td>
+              <td>Authenticated</td>
+              <td>Fetch scoped lecture sessions.</td>
+            </tr>
+            <tr>
+              <td><code>POST</code></td>
+              <td><code>/api/attendance/mark</code></td>
+              <td>Faculty</td>
+              <td>Submit live attendance roster records.</td>
+            </tr>
+            <tr>
+              <td><code>GET</code></td>
+              <td><code>/api/reports/monthly-matrix</code></td>
+              <td>Admin</td>
+              <td>Generate monthly matrix data sheet.</td>
+            </tr>
+            <tr>
+              <td><code>POST</code></td>
+              <td><code>/api/system/reset</code></td>
+              <td>Superadmin</td>
+              <td>Execute protected data reset operations.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="srs-section">
+        <h2>5. Non-Functional Requirements</h2>
+        <ul>
+          <li><b>Performance</b>: Page load times under 1.2s; report rendering under 800ms.</li>
+          <li><b>Security</b>: Passwords salted with bcrypt (10 rounds); HTTP headers set via Helmet middleware (XSS, NoSniff, Frame-Options DENY).</li>
+          <li><b>Availability</b>: 99.9% uptime backed by MongoDB Atlas Cloud Cluster.</li>
+          <li><b>Maintainability</b>: Modular architecture separating models, routes, middleware, and public static client assets.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- External Libraries: pdfmake + html-to-pdfmake -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-pdfmake/browser.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const downloadBtn = document.getElementById('downloadPdfBtn');
+      const msg = document.getElementById('pdfStatusMsg');
+
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+          if (msg) {
+            msg.style.color = '#2563eb';
+            msg.textContent = '⏳ Compiling SRS PDF with pdfmake & html-to-pdfmake...';
+          }
+
+          try {
+            const htmlContent = document.getElementById('srsContentArea').innerHTML;
+            
+            // Convert HTML to pdfmake JSON payload using html-to-pdfmake
+            const val = htmlToPdfmake(htmlContent);
+
+            const docDefinition = {
+              content: val,
+              pageSize: 'A4',
+              pageMargins: [40, 50, 40, 50],
+              defaultStyle: {
+                font: 'Roboto'
+              },
+              styles: {
+                html_h2: {
+                  color: '#1e3a8a',
+                  bold: true,
+                  marginTop: 15,
+                  marginBottom: 8
+                },
+                html_h3: {
+                  color: '#0f172a',
+                  bold: true,
+                  marginTop: 10,
+                  marginBottom: 6
+                },
+                html_table: {
+                  marginBottom: 12
+                },
+                html_th: {
+                  fillColor: '#f1f5f9',
+                  bold: true,
+                  color: '#1e3a8a'
+                }
+              }
+            };
+
+            // Generate and download PDF via pdfmake
+            pdfMake.createPdf(docDefinition).download('TCET_Attendance_System_SRS_Document.pdf');
+
+            if (msg) {
+              msg.style.color = '#16a34a';
+              msg.textContent = '✔ SRS PDF downloaded successfully!';
+            }
+          } catch (err) {
+            console.error('Error generating PDF:', err);
+            if (msg) {
+              msg.style.color = '#dc2626';
+              msg.textContent = 'Error compiling PDF. Using browser print mode...';
+            }
+            setTimeout(() => { window.print(); }, 800);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
