@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Reports - Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .signature-settings-panel {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: none; /* Toggleable */
+    }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .sig-card-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .sig-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sig-field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 6px;
+    }
+
+    .sig-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .sig-field label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+
+    .sig-field input {
+      font-size: 12px;
+      padding: 5px 8px;
+    }
+
+    .btn-sm-action {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Specific print override for A3 Landscape */
+    @media print {
+      @page { size: A3 landscape; margin: 8mm; }
+
+      body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+      header, nav, footer, form, .btn-link, #exportStatusMsg,
+      .filter-grid, .action-toolbar, .signature-settings-panel, #toggleSigSettingsBtn, legend, hr { display: none !important; }
+
+      fieldset, .card { border: none !important; padding: 0 !important; box-shadow: none !important; }
+      main { max-width: 100% !important; padding: 0 !important; }
+      #reportContainer { overflow: visible !important; border: none !important; }
+
+      #printableReportArea {
+        padding: 0 !important;
+        font-size: 8px !important;
+      }
+
+      #printableReportArea table {
+        font-size: 8px !important;
+        width: 100% !important;
+      }
+
+      #printableReportArea th,
+      #printableReportArea td {
+        padding: 2px 3px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Department Admin Portal</h1>
+    <p>Logged in as: <b id="adminName">Loading...</b> (<span id="adminEmail">...</span>)</p>
+    <p><b>Managed Department(s):</b> <span id="adminDeptList">Loading...</span></p>
+    <nav>
+      <a href="/admin/index.html">Overview</a>
+      <a href="/admin/faculties.html">Manage Faculties</a>
+      <a href="/admin/students.html">Manage Students</a>
+      <a href="/admin/lectures.html">Lectures &amp; Substitutes</a>
+      <a href="/admin/reports.html"><b>Attendance Reports</b></a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-title">Attendance Report Generator &amp; Exporter (PDF, CSV, Excel)</div>
+
+      <!-- Responsive Filter Controls Grid -->
+      <div class="filter-grid">
+        <div class="filter-group wide">
+          <label for="reportDept">Department</label>
+          <select id="reportDept"></select>
+        </div>
+
+        <div class="filter-group">
+          <label for="reportBranch">Branch</label>
+          <input type="text" id="reportBranch" placeholder="e.g. SD">
+        </div>
+
+        <div class="filter-group">
+          <label for="reportBatch">Batch</label>
+          <input type="text" id="reportBatch" placeholder="e.g. Batch-5">
+        </div>
+
+        <div class="filter-group">
+          <label for="reportMonth">Month</label>
+          <select id="reportMonth">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7" selected>July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="reportYear">Year</label>
+          <input type="number" id="reportYear" value="2026">
+        </div>
+      </div>
+
+      <!-- Responsive Action Toolbar -->
+      <div class="action-toolbar">
+        <button id="genMonthlyMatrixBtn" type="button"><b>📊 Generate Monthly Matrix</b></button>
+        <button id="genRegisterGridBtn" type="button"><b>📋 Generate Register Grid</b></button>
+        <button id="toggleSigSettingsBtn" type="button" style="background: #f1f5f9; color: #334155; border-color: #cbd5e1;"><b>✍️ Custom Signature Blanks &amp; Labels</b></button>
+        
+        <a id="exportCsvBtn" href="#" download="Monthly_Attendance_Report.csv" class="btn-link" style="color: #1e40af;"><b>📥 CSV</b></a>
+        <a id="exportExcelBtn" href="#" download="Monthly_Attendance_Report.xls" class="btn-link" style="color: #15803d;"><b>📥 Excel</b></a>
+
+        <button id="exportPdfBtn" type="button"><b>📥 PDF</b></button>
+        <button id="printReportBtn" type="button"><b>🖨️ Print</b></button>
+      </div>
+
+      <!-- Fully Customizable Signature Blanks & Labels Panel -->
+      <div id="signatureSettingsPanel" class="signature-settings-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <p style="font-size: 13px; font-weight: 700; color: #0f172a; margin: 0;">✍️ Custom Blank Labels, Names &amp; Remarks Editor</p>
+          <div>
+            <button id="clearAllSigsBtn" type="button" class="btn-sm-action" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; margin-right: 6px;">Clear All to Blank</button>
+            <button id="loadDefaultSigsBtn" type="button" class="btn-sm-action" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">Load Sample Labels &amp; Names</button>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Customize every label, header, name, designation, due date, and remark field. All fields default to blank inputs.</p>
+        
+        <div class="signature-grid">
+          <!-- Slot 1 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 1</div>
+            <div class="sig-field">
+              <label for="slot1Header">Header Label</label>
+              <input type="text" id="slot1Header" value="" placeholder="e.g. Prepared By">
+            </div>
+            <div class="sig-field">
+              <label for="slot1Name">Name</label>
+              <input type="text" id="slot1Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot1Title">Designation / Title</label>
+              <input type="text" id="slot1Title" value="" placeholder="e.g. Lecturer, B.Voc">
+            </div>
+          </div>
+
+          <!-- Slot 2 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 2</div>
+            <div class="sig-field">
+              <label for="slot2Header">Header Label</label>
+              <input type="text" id="slot2Header" value="" placeholder="e.g. Checked By">
+            </div>
+            <div class="sig-field">
+              <label for="slot2Name">Name</label>
+              <input type="text" id="slot2Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot2Title">Designation / Title</label>
+              <input type="text" id="slot2Title" value="" placeholder="e.g. HOD, B.Voc">
+            </div>
+          </div>
+
+          <!-- Slot 3 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 3</div>
+            <div class="sig-field">
+              <label for="slot3Header">Header Label</label>
+              <input type="text" id="slot3Header" value="" placeholder="e.g. Verified By">
+            </div>
+            <div class="sig-field">
+              <label for="slot3Name">Name</label>
+              <input type="text" id="slot3Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot3Title">Designation / Title</label>
+              <input type="text" id="slot3Title" value="" placeholder="e.g. Associate Dean">
+            </div>
+          </div>
+
+          <!-- Slot 4 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 4</div>
+            <div class="sig-field">
+              <label for="slot4Header">Header Label</label>
+              <input type="text" id="slot4Header" value="" placeholder="e.g. Reviewed By">
+            </div>
+            <div class="sig-field">
+              <label for="slot4Name">Name</label>
+              <input type="text" id="slot4Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot4Title">Designation / Title</label>
+              <input type="text" id="slot4Title" value="" placeholder="e.g. Dean Student Welfare">
+            </div>
+          </div>
+
+          <!-- Slot 5 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 5</div>
+            <div class="sig-field">
+              <label for="slot5Header">Header Label</label>
+              <input type="text" id="slot5Header" value="" placeholder="e.g. Approved By">
+            </div>
+            <div class="sig-field">
+              <label for="slot5Name">Name</label>
+              <input type="text" id="slot5Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot5Title">Designation / Title</label>
+              <input type="text" id="slot5Title" value="" placeholder="e.g. Dean Academics">
+            </div>
+          </div>
+
+          <!-- Slot 6 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 6</div>
+            <div class="sig-field">
+              <label for="slot6Header">Header Label</label>
+              <input type="text" id="slot6Header" value="" placeholder="e.g. Vice Principal">
+            </div>
+            <div class="sig-field">
+              <label for="slot6Name">Name</label>
+              <input type="text" id="slot6Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot6Title">Designation / Title</label>
+              <input type="text" id="slot6Title" value="" placeholder="e.g. Vice Principal">
+            </div>
+          </div>
+
+          <!-- Slot 7 -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Signature Slot 7</div>
+            <div class="sig-field">
+              <label for="slot7Header">Header Label</label>
+              <input type="text" id="slot7Header" value="" placeholder="e.g. Principal">
+            </div>
+            <div class="sig-field">
+              <label for="slot7Name">Name</label>
+              <input type="text" id="slot7Name" value="" placeholder="Enter Name">
+            </div>
+            <div class="sig-field">
+              <label for="slot7Title">Designation / Title</label>
+              <input type="text" id="slot7Title" value="" placeholder="e.g. Principal">
+            </div>
+          </div>
+
+          <!-- Remarks & Dates -->
+          <div class="sig-card-box">
+            <div class="sig-card-title">Remarks &amp; Dates</div>
+            <div class="sig-field">
+              <label for="customRemarkText">Remark Note</label>
+              <input type="text" id="customRemarkText" value="" placeholder="Enter remark text">
+            </div>
+            <div class="sig-field">
+              <label for="customDueDate">Due Date</label>
+              <input type="text" id="customDueDate" value="" placeholder="DD/MM/YYYY">
+            </div>
+            <div class="sig-field">
+              <label for="customCompletionDate">Completion Date</label>
+              <input type="text" id="customCompletionDate" value="" placeholder="DD/MM/YYYY">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="exportStatusMsg"></div>
+
+      <!-- Responsive Scrollable Table Container -->
+      <div id="reportContainer">
+        <p style="padding: 20px; color: var(--text-secondary);">Select criteria above and click a button to generate reports.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Admin Panel</small></p>
+  </footer>
+
+  <!-- Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <script src="/js/auth.js?v=20260813_v17"></script>
+  <script src="/js/admin/reports.js?v=20260813_v17"></script>
+</body>
+</html>

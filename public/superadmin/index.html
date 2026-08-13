@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superadmin Overview - Attendance System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Superadmin Portal</h1>
+    <p>Logged in as: <b id="superadminName">Loading...</b> (<span id="superadminEmail">...</span>)</p>
+    <nav>
+      <a href="/superadmin/index.html"><b>Overview</b></a>
+      <a href="/superadmin/departments.html">Manage Departments</a>
+      <a href="/superadmin/admins.html">Manage Admins</a>
+      <a href="/superadmin/directory.html">Faculties &amp; Students Directory</a>
+      <a href="/superadmin/reset.html">⚠️ System Reset</a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-title">System Overview &amp; Summary Statistics</div>
+      
+      <div class="table-wrap">
+        <table border="1" cellpadding="8" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th>Departments</th>
+              <th>Admins</th>
+              <th>Faculties</th>
+              <th>Students</th>
+              <th>Total Lectures</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr align="center">
+              <td id="statDepts">0</td>
+              <td id="statAdmins">0</td>
+              <td id="statFaculties">0</td>
+              <td id="statStudents">0</td>
+              <td id="statLectures">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.4px;">Quick Actions</div>
+        <div class="action-toolbar">
+          <a href="/superadmin/departments.html" class="btn-link"><b>🏛️ Manage Departments</b></a>
+          <a href="/superadmin/admins.html" class="btn-link"><b>👑 Manage Department Admins</b></a>
+          <a href="/superadmin/directory.html" class="btn-link"><b>👥 System Users Directory</b></a>
+          <a href="/superadmin/reset.html" class="btn-link" style="color: var(--danger);"><b>⚠️ System Data Reset</b></a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Superadmin Panel</small></p>
+  </footer>
+
+  <script src="/js/auth.js?v=20260813_v18"></script>
+  <script src="/js/superadmin/dashboard.js?v=20260813_v18"></script>
+</body>
+</html>

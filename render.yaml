@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: college-attendance-system
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: MASTER_RESET_PASSWORD
+        value: RESET@2026

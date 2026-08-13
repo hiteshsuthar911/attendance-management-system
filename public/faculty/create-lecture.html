@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Lecture - Faculty</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Faculty Portal</h1>
+    <p>Logged in as: <b id="facultyName">Loading...</b> (<span id="facultyEmail">...</span>)</p>
+    <p><b>Department:</b> <span id="facultyDept">Loading...</span></p>
+    <nav>
+      <a href="/faculty/index.html">Overview</a>
+      <a href="/faculty/create-lecture.html"><b>Schedule New Lecture</b></a>
+      <a href="/faculty/attendance.html">Mark Attendance</a>
+      <a href="/faculty/history.html">Attendance History</a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-title">Schedule New Lecture Session</div>
+      <div id="lectureMsg"></div>
+      <form id="createLectureForm">
+        <div class="form-grid">
+          <div>
+            <label for="subjectName">Subject Name</label>
+            <input type="text" id="subjectName" placeholder="e.g. Web Development-Front End-II" required>
+          </div>
+
+          <div>
+            <label for="lectureBranch">Branch</label>
+            <input type="text" id="lectureBranch" placeholder="e.g. SD" value="SD" required>
+          </div>
+
+          <div>
+            <label for="lectureBatch">Batch</label>
+            <input type="text" id="lectureBatch" placeholder="e.g. Batch-5" value="Batch-5" required>
+          </div>
+
+          <div>
+            <label for="lectureDate">Lecture Date</label>
+            <input type="date" id="lectureDate" required>
+          </div>
+
+          <!-- Dedicated Visual Time Slot Picker -->
+          <div style="grid-column: 1 / -1;">
+            <label>Time Slot Picker</label>
+            <div class="timeslot-picker-box">
+              <div class="timeslot-range-inputs">
+                <div>
+                  <label for="timeStartInput">Start Time</label>
+                  <input type="time" id="timeStartInput" value="09:30">
+                </div>
+                <span style="font-weight: 700; color: var(--text-tertiary); margin-top: 14px;">to</span>
+                <div>
+                  <label for="timeEndInput">End Time</label>
+                  <input type="time" id="timeEndInput" value="11:30">
+                </div>
+              </div>
+
+              <label style="font-size: 10.5px;">Quick Presets</label>
+              <div class="timeslot-chips" id="timeSlotChips">
+                <div class="timeslot-chip active" data-slot="9:30am to 11:30am" data-start="09:30" data-end="11:30">🌅 9:30 AM - 11:30 AM</div>
+                <div class="timeslot-chip" data-slot="11:30am to 1:30pm" data-start="11:30" data-end="13:30">☀️ 11:30 AM - 1:30 PM</div>
+                <div class="timeslot-chip" data-slot="1:30pm to 3:30pm" data-start="13:30" data-end="15:30">☕ 1:30 PM - 3:30 PM</div>
+                <div class="timeslot-chip" data-slot="2:00pm to 4:00pm" data-start="14:00" data-end="16:00">🌇 2:00 PM - 4:00 PM</div>
+                <div class="timeslot-chip" data-slot="4:00pm to 6:00pm" data-start="16:00" data-end="18:00">🌆 4:00 PM - 6:00 PM</div>
+              </div>
+
+              <input type="hidden" id="timeSlot" value="9:30am to 11:30am" required>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <button type="submit"><b>Create Lecture</b></button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Faculty Panel</small></p>
+  </footer>
+
+  <script src="/js/auth.js?v=20260813_v17"></script>
+  <script src="/js/faculty/create-lecture.js?v=20260813_v17"></script>
+</body>
+</html>

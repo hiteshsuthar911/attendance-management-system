@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Dashboard - Attendance System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Faculty Portal</h1>
+    <p>Logged in as: <b id="facultyName">Loading...</b> (<span id="facultyEmail">...</span>)</p>
+    <p><b>Department:</b> <span id="facultyDept">Loading...</span></p>
+    <nav>
+      <a href="/faculty/index.html"><b>Overview</b></a>
+      <a href="/faculty/create-lecture.html">Schedule New Lecture</a>
+      <a href="/faculty/attendance.html">Mark Attendance</a>
+      <a href="/faculty/history.html">Attendance History</a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-title">Faculty Overview &amp; Quick Actions</div>
+
+      <div class="table-wrap">
+        <table border="1" cellpadding="8" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th>Total Scheduled Sessions</th>
+              <th>Conducted Sessions</th>
+              <th>Substitute Assignments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr align="center">
+              <td id="statTotalLectures">0</td>
+              <td id="statConducted">0</td>
+              <td id="statSubstitutes">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.4px;">Quick Actions</div>
+        <div class="action-toolbar">
+          <a href="/faculty/create-lecture.html" class="btn-link"><b>➕ Schedule New Lecture Session</b></a>
+          <a href="/faculty/attendance.html" class="btn-link" style="color: var(--accent);"><b>📝 Mark Student Attendance</b></a>
+          <a href="/faculty/history.html" class="btn-link"><b>📜 View Attendance History</b></a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Faculty Panel</small></p>
+  </footer>
+
+  <script src="/js/auth.js?v=20260813_v17"></script>
+  <script src="/js/faculty/dashboard.js?v=20260813_v17"></script>
+</body>
+</html>

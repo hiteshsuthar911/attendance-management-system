@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Students - Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Department Admin Portal</h1>
+    <p>Logged in as: <b id="adminName">Loading...</b> (<span id="adminEmail">...</span>)</p>
+    <p><b>Managed Department(s):</b> <span id="adminDeptList">Loading...</span></p>
+    <nav>
+      <a href="/admin/index.html">Overview</a>
+      <a href="/admin/faculties.html">Manage Faculties</a>
+      <a href="/admin/students.html"><b>Manage Students</b></a>
+      <a href="/admin/lectures.html">Lectures &amp; Substitutes</a>
+      <a href="/admin/reports.html">Attendance Reports</a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-title">Enroll New Student</div>
+      <div id="studentMsg"></div>
+      <form id="createStudentForm">
+        <div class="form-grid">
+          <div>
+            <label for="studentName">Full Name</label>
+            <input type="text" id="studentName" placeholder="e.g. Hitesh Suthar Jagdsih" required>
+          </div>
+
+          <div>
+            <label for="studentEmail">Email Address</label>
+            <input type="email" id="studentEmail" placeholder="e.g. 1032251654@tcetmumbai.in" required>
+          </div>
+
+          <div>
+            <label for="studentPassword">Password</label>
+            <input type="password" id="studentPassword" placeholder="Enter password" required>
+          </div>
+
+          <div>
+            <label for="studentRoll">Roll Number</label>
+            <input type="text" id="studentRoll" placeholder="e.g. BV25-SD17" required>
+          </div>
+
+          <div>
+            <label for="studentDept">Department</label>
+            <select id="studentDept" required></select>
+          </div>
+
+          <div>
+            <label for="studentBranch">Branch</label>
+            <input type="text" id="studentBranch" placeholder="e.g. SD" value="SD" required>
+          </div>
+
+          <div>
+            <label for="studentBatch">Batch</label>
+            <input type="text" id="studentBatch" placeholder="e.g. Batch-5" value="Batch-5" required>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; margin-bottom: 24px;">
+          <button type="submit" id="enrollStudentBtn"><b>Enroll Student</b></button>
+        </div>
+      </form>
+
+      <div style="border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 20px;">
+        <div style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.2px;">Enrolled Students Directory &amp; Filter</div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="filterBranch">Branch</label>
+            <input type="text" id="filterBranch" placeholder="e.g. SD">
+          </div>
+
+          <div class="filter-group">
+            <label for="filterBatch">Batch</label>
+            <input type="text" id="filterBatch" placeholder="e.g. Batch-5">
+          </div>
+
+          <div style="margin-bottom: 2px;">
+            <button type="button" id="filterStudentsBtn">Filter Students</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table border="1" cellpadding="8" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Roll No.</th>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Branch</th>
+                <th>Batch</th>
+                <th>Department</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <tr><td colspan="8" align="center">Loading students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Admin Panel</small></p>
+  </footer>
+
+  <script src="/js/auth.js?v=20260813_v17"></script>
+  <script src="/js/admin/students.js?v=20260813_v17"></script>
+</body>
+</html>

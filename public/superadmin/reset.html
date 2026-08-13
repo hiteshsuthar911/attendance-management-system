@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Data Reset &amp; Cleanup - Superadmin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Superadmin Portal</h1>
+    <p>Logged in as: <b id="superadminName">Loading...</b> (<span id="superadminEmail">...</span>)</p>
+    <nav>
+      <a href="/superadmin/index.html">Overview</a>
+      <a href="/superadmin/departments.html">Manage Departments</a>
+      <a href="/superadmin/admins.html">Manage Admins</a>
+      <a href="/superadmin/directory.html">Faculties &amp; Students Directory</a>
+      <a href="/superadmin/reset.html"><b>🔒 System Data Reset</b></a>
+      <button id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Password Unlock Box -->
+    <div id="passwordGateBox" class="card" style="max-width: 520px; margin: 40px auto; text-align: center;">
+      <div style="font-size: 36px; margin-bottom: 8px;">🔒</div>
+      <div class="card-title" style="border: none; margin-bottom: 8px; font-size: 18px;">Security Reset Password Required</div>
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">
+        To access the System Data Reset controls, enter the Master Reset Password (<code>RESET@2026</code>) or your Superadmin account password.
+      </p>
+
+      <div id="gateMsg"></div>
+
+      <form id="passwordGateForm" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <input type="password" id="gatePasswordInput" placeholder="Enter Reset Security Password" required style="text-align: center; font-size: 15px; font-weight: 700; letter-spacing: 1px;">
+        </div>
+        <button type="submit" style="background: var(--accent); color: white; border-color: var(--accent); padding: 12px; font-size: 14px;">
+          <b>Unlock System Reset Controls</b>
+        </button>
+      </form>
+    </div>
+
+    <!-- Protected Reset Panel (Hidden until unlocked) -->
+    <div id="resetControlsCard" class="card" style="display: none;">
+      <div class="card-title">⚠️ System Data Reset &amp; Cleanup Management</div>
+      <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 13.5px;">
+        Perform targeted or full database cleanups. Select an option below, re-verify password, and type <b>RESET</b> to confirm execution.
+      </p>
+
+      <div id="resetMsg"></div>
+
+      <form id="systemResetForm">
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+          
+          <label class="reset-option-card" style="display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md); cursor: pointer;">
+            <input type="radio" name="resetType" value="attendance_only" checked style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent);">
+            <div>
+              <b style="font-size: 14px; color: var(--text-primary);">1. Clear Attendance Logs Only</b>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;">Deletes all recorded attendance sheets while keeping scheduled lectures, departments, faculty, and student user accounts intact.</p>
+            </div>
+          </label>
+
+          <label class="reset-option-card" style="display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md); cursor: pointer;">
+            <input type="radio" name="resetType" value="lectures_only" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent);">
+            <div>
+              <b style="font-size: 14px; color: var(--text-primary);">2. Clear All Scheduled Lectures &amp; Attendance Logs</b>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;">Deletes all scheduled lectures and attendance records. User accounts and department structures remain saved.</p>
+            </div>
+          </label>
+
+          <label class="reset-option-card" style="display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md); cursor: pointer;">
+            <input type="radio" name="resetType" value="users_only" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent);">
+            <div>
+              <b style="font-size: 14px; color: var(--text-primary);">3. Clear All Faculty, Student &amp; Admin User Accounts</b>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;">Deletes all enrolled students, faculty members, and department admins. Preserves Superadmin login.</p>
+            </div>
+          </label>
+
+          <label class="reset-option-card" style="display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--danger-light); border: 1.5px solid var(--danger-border); border-radius: var(--radius-md); cursor: pointer;">
+            <input type="radio" name="resetType" value="full_system" style="margin-top: 3px; width: 18px; height: 18px; accent-color: var(--danger);">
+            <div>
+              <b style="font-size: 14px; color: var(--danger-hover);">🔥 MASTER WIPE: Full System Reset (Factory Reset)</b>
+              <p style="font-size: 12.5px; color: #991b1b; margin-top: 2px;">Wipes all attendance logs, lectures, departments, faculty members, students, and department admins. Only Superadmin is preserved.</p>
+            </div>
+          </label>
+
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+          <div>
+            <label for="confirmPasswordInput"><b>Enter Master Reset Password:</b></label>
+            <input type="password" id="confirmPasswordInput" placeholder="Master or Superadmin Password" required style="font-size: 14px; font-weight: 700;">
+          </div>
+          <div>
+            <label for="confirmTextInput"><b>Type "RESET" to confirm:</b></label>
+            <input type="text" id="confirmTextInput" placeholder="Type RESET in capital letters" required style="font-size: 14px; font-weight: 700; letter-spacing: 1px;">
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" id="executeResetBtn" style="background: var(--danger); color: white; border-color: var(--danger); font-size: 14px; padding: 12px 24px;"><b>⚠️ Execute System Reset</b></button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p><small>&copy; 2026 Attendance System - Superadmin Panel</small></p>
+  </footer>
+
+  <script src="/js/auth.js?v=20260813_v19"></script>
+  <script src="/js/superadmin/reset.js?v=20260813_v19"></script>
+</body>
+</html>

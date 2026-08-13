@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Management System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Attendance Management System</h1>
+    <hr>
+  </header>
+
+  <main>
+    <section>
+      <fieldset>
+        <legend><b>Welcome</b></legend>
+        <p>Redirecting to your dashboard...</p>
+        <p>If you are not redirected automatically, click below:</p>
+        <ul>
+          <li><a href="/login.html">Login Page</a></li>
+        </ul>
+      </fieldset>
+    </section>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.getUser();
+      if (!user) {
+        window.location.href = '/login.html';
+      } else {
+        Auth.redirectToDashboard(user.role);
+      }
+    });
+  </script>
+</body>
+</html>
