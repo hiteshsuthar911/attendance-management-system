@@ -31,7 +31,7 @@
     .hero-panel {
       flex: 1;
       background: linear-gradient(145deg, #1e3a8a 0%, #0f172a 100%);
-      padding: 60px 80px;
+      padding: 50px 70px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -67,19 +67,41 @@
       pointer-events: none;
     }
 
+    .hero-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .hero-logo-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 8px 16px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-logo-img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: 30px;
       font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.3px;
-      width: fit-content;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       z-index: 2;
     }
 
@@ -98,16 +120,16 @@
     }
 
     .hero-title {
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 800;
       line-height: 1.2;
       letter-spacing: -1.2px;
       color: #ffffff;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .hero-sub {
-      font-size: 16px;
+      font-size: 15.5px;
       color: #94a3b8;
       line-height: 1.7;
     }
@@ -145,14 +167,14 @@
 
     /* College Logo Header */
     .logo-container {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
     .college-logo {
-      max-height: 70px;
+      max-height: 72px;
       width: auto;
       object-fit: contain;
     }
@@ -168,7 +190,7 @@
     .form-header p {
       font-size: 14px;
       color: #64748b;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     /* Form Inputs */
@@ -240,7 +262,7 @@
 
     /* Security Notice Box */
     .hint {
-      margin-top: 28px;
+      margin-top: 26px;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
@@ -258,20 +280,54 @@
       margin-bottom: 4px;
     }
 
-    /* Responsive Breakpoints */
+    /* Clean Simple Mobile View */
     @media (max-width: 992px) {
       .hero-panel { display: none; }
-      .form-panel { flex: 1; padding: 40px 24px; }
+      .form-panel {
+        flex: 1;
+        padding: 30px 20px;
+        justify-content: center;
+        background: #f8fafc;
+      }
+      .form-wrapper {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 32px 24px;
+        box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+      }
+      .logo-container {
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .college-logo {
+        max-height: 65px;
+      }
+      .form-header {
+        text-align: center;
+      }
+      .form-header h2 {
+        font-size: 24px;
+      }
+      .form-header p {
+        font-size: 13px;
+        margin-bottom: 22px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <!-- Left Hero Banner Panel (Full Height) -->
+    <!-- Left Hero Banner Panel (With Logo & Badge) -->
     <div class="hero-panel">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        TCET Official Portal
+      <div class="hero-header-bar">
+        <div class="hero-logo-box">
+          <img src="/images/tcetlogo.png" alt="TCET Logo" class="hero-logo-img">
+        </div>
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          TCET Official Portal
+        </div>
       </div>
 
       <div class="hero-content">
@@ -286,7 +342,7 @@
       </div>
     </div>
 
-    <!-- Right Form Panel (Full Height Centered) -->
+    <!-- Right Form Panel (Clean Form & Mobile View Card) -->
     <div class="form-panel">
       <div class="form-wrapper">
         <div class="logo-container">
@@ -322,7 +378,7 @@
     </div>
   </div>
 
-  <script src="/js/auth.js?v=20260813_v20"></script>
+  <script src="/js/auth.js?v=20260813_v21"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const user = Auth.getUser();
