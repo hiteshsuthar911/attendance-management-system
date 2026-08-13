@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
   <title>Sign In — TCET Attendance System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -236,7 +238,7 @@
       margin-bottom: 16px;
     }
 
-    /* Credentials Hint Box */
+    /* Security Notice Box */
     .hint {
       margin-top: 28px;
       background: #f8fafc;
@@ -246,6 +248,7 @@
       font-size: 12.5px;
       color: #64748b;
       line-height: 1.6;
+      text-align: center;
     }
 
     .hint strong {
@@ -253,15 +256,6 @@
       font-weight: 700;
       display: block;
       margin-bottom: 4px;
-    }
-
-    code {
-      font-family: 'Courier New', monospace;
-      font-size: 12.5px;
-      color: #2563eb;
-      background: #eff6ff;
-      border-radius: 4px;
-      padding: 2px 7px;
     }
 
     /* Responsive Breakpoints */
@@ -282,7 +276,7 @@
 
       <div class="hero-content">
         <h1 class="hero-title">TCET Attendance System</h1>
-        <p class="hero-sub">Thakur College of Engineering & Technology — Streamlined attendance management for faculties, students, and department administration.</p>
+        <p class="hero-sub">Thakur College of Engineering &amp; Technology — Streamlined attendance management for faculties, students, and department administration.</p>
       </div>
 
       <div class="hero-footer">
@@ -296,12 +290,12 @@
     <div class="form-panel">
       <div class="form-wrapper">
         <div class="logo-container">
-          <img src="/images/tcetlogo.png" alt="Thakur College of Engineering & Technology Logo" class="college-logo" onerror="this.style.display='none'">
+          <img src="/images/tcetlogo.png" alt="Thakur College of Engineering &amp; Technology Logo" class="college-logo" onerror="this.style.display='none'">
         </div>
 
         <div class="form-header">
           <h2>Welcome back.</h2>
-          <p>Enter your credentials to access your dashboard</p>
+          <p>Enter your institutional credentials to access your dashboard</p>
         </div>
 
         <div id="loginMessage"></div>
@@ -321,16 +315,14 @@
         </form>
 
         <div class="hint">
-          <strong>Default Superadmin Credentials</strong>
-          Email: <code>superadmin@attendance.com</code><br>
-          Password: <code>superadmin123</code><br>
-          <span style="color:#94a3b8; font-size:11.5px;">2-Step verification required on next screen.</span>
+          <strong>🔒 Authorized Access Only</strong>
+          <span>Thakur College of Engineering &amp; Technology Attendance System.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="/js/auth.js?v=20260813_v9"></script>
+  <script src="/js/auth.js?v=20260813_v20"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const user = Auth.getUser();
