@@ -1,0 +1,13 @@
+{
+  "appId": "com.tcet.attendance",
+  "appName": "TCET Attendance",
+  "webDir": "public",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://attendance-management-system-1-qum2.onrender.com",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
