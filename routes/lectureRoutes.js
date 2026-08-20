@@ -65,31 +65,30 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
-// Create Lecture (Admin & Faculty)
+// Create Lecture (Superadmin, Admin & Faculty)
 router.post('/', verifyToken, authorizeRoles('superadmin', 'admin', 'faculty'), async (req, res) => {
   try {
-    const { subject, departmentId, branch, batch, facultyId, date, timeSlot, remarks } = req.body;
+    const { subject, departmentId, department, branch, batch, facultyId, faculty, date, timeSlot, remarks } = req.body;
 
-    if (!subject || !departmentId || !branch || !batch || !timeSlot) {
+    const finalDept = departmentId || department || (req.user.departments && req.user.departments.length > 0 ? (req.user.departments[0]._id || req.user.departments[0]) : null);
+    const finalFaculty = facultyId || faculty || (req.user.role === 'faculty' ? req.user._id : (req.user._id));
+
+    if (!subject || !finalDept || !branch || !batch || !timeSlot) {
       return res.status(400).json({
         success: false,
-        message: 'Subject, departmentId, branch, batch, and timeSlot are required.'
+        message: 'Subject, department, branch, batch, and timeSlot are required.'
       });
     }
 
-    const assignedFacultyId = (facultyId && typeof facultyId === 'string' && facultyId.trim().length > 0)
-      ? facultyId
-      : (req.user.role === 'faculty' ? req.user._id : req.user._id);
-
     const lecture = await Lecture.create({
-      subject,
-      department: departmentId,
-      branch,
-      batch,
-      faculty: assignedFacultyId,
+      subject: subject.trim(),
+      department: finalDept,
+      branch: branch.trim().toUpperCase(),
+      batch: batch.trim(),
+      faculty: finalFaculty,
       date: date ? new Date(date) : new Date(),
-      timeSlot,
-      remarks,
+      timeSlot: timeSlot.trim(),
+      remarks: remarks || 'Regular Lecture',
       createdBy: req.user._id
     });
 

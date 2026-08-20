@@ -119,7 +119,9 @@ export default function ManageLectures() {
         method: 'POST',
         body: JSON.stringify({
           subject: subject.trim(),
+          facultyId: facultyId,
           faculty: facultyId,
+          departmentId: deptId,
           department: deptId,
           branch: branch.trim().toUpperCase(),
           batch: batch.trim(),
