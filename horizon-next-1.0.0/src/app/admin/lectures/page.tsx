@@ -232,11 +232,15 @@ export default function ManageLectures() {
               required
               className="mt-1.5 flex h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-navy-700 outline-none focus:border-brand-500 dark:border-white/10 dark:bg-navy-900 dark:text-white"
             >
-              {faculties.map((f) => (
-                <option key={f._id} value={f._id}>
-                  {f.name} ({f.email})
-                </option>
-              ))}
+              {faculties.length === 0 ? (
+                <option value="">-- No Faculties Found (Create in Faculty Tab first) --</option>
+              ) : (
+                faculties.map((f) => (
+                  <option key={f._id} value={f._id}>
+                    {f.name} ({f.email})
+                  </option>
+                ))
+              )}
             </select>
           </div>
 

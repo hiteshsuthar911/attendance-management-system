@@ -34,12 +34,6 @@ export const superadminRoutes: IRoute[] = [
     icon: <MdApartment className="h-6 w-6" />,
   },
   {
-    name: 'Faculty',
-    layout: '/admin',
-    path: 'faculties',
-    icon: <MdSchool className="h-6 w-6" />,
-  },
-  {
     name: 'Manage Admins',
     layout: '/admin',
     path: 'admins',

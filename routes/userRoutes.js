@@ -16,16 +16,20 @@ router.get('/', verifyToken, authorizeRoles('superadmin', 'admin', 'faculty'), a
 
     // Role-based visibility scoping
     if (req.user.role === 'admin') {
-      const adminDeptIds = req.user.departments.map(d => d._id || d);
+      const adminDeptIds = req.user.departments.map(d => (d._id || d).toString());
       if (role === 'admin') {
         // Admin can see themselves
         filter._id = req.user._id;
       } else if (role === 'faculty') {
-        // Faculty belonging to admin's department(s)
+        // Faculty belonging to admin's department(s) or general faculty
         if (departmentId) {
           filter.departments = departmentId;
         } else if (adminDeptIds.length > 0) {
-          filter.departments = { $in: adminDeptIds };
+          filter.$or = [
+            { departments: { $in: adminDeptIds } },
+            { departments: { $size: 0 } },
+            { departments: { $exists: false } }
+          ];
         }
       } else if (role === 'student') {
         // Student in admin's department(s)
@@ -111,37 +115,34 @@ router.post('/admin', verifyToken, authorizeRoles('superadmin'), async (req, res
 // Create Faculty (Superadmin & Admin)
 router.post('/faculty', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
   try {
-    const { name, email, password, departmentIds } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Name, email, and password are required.' });
+    const { name, email, password, departmentIds, departments } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ success: false, message: 'Name and email are required.' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'A user with this email address already exists.' });
     }
 
-    let deptsToAssign = Array.isArray(departmentIds)
-      ? departmentIds.filter(id => id && typeof id === 'string' && id.trim().length > 0)
+    const rawDepts = departmentIds || departments;
+    let deptsToAssign = Array.isArray(rawDepts)
+      ? rawDepts.filter(id => id && typeof id === 'string' && id.trim().length > 0)
       : [];
 
-    // If created by Admin, verify department access if specified
+    // If created by Admin and none specified, default to admin's own departments
     if (req.user.role === 'admin') {
       const adminDeptIds = req.user.departments.map(d => (d._id || d).toString());
       if (deptsToAssign.length === 0) {
         deptsToAssign = adminDeptIds;
-      } else {
-        const isValid = deptsToAssign.every(id => adminDeptIds.includes(id.toString()));
-        if (!isValid) {
-          return res.status(403).json({ success: false, message: 'You can only assign faculty to your own managed department(s).' });
-        }
       }
     }
 
     const faculty = await User.create({
-      name,
-      email,
-      password,
+      name: name.trim(),
+      email: cleanEmail,
+      password: password && password.trim() ? password.trim() : 'faculty123',
       role: 'faculty',
       departments: deptsToAssign
     });
@@ -208,7 +209,7 @@ router.post('/student', verifyToken, authorizeRoles('superadmin', 'admin'), asyn
 // General Create User (Superadmin & Admin)
 router.post('/', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
   try {
-    const { name, email, password, role, rollNumber, branch, batch, departmentId, studentDetails } = req.body;
+    const { name, email, password, role, rollNumber, branch, batch, departmentId, departments, departmentIds, studentDetails } = req.body;
     const cleanEmail = (email || '').trim().toLowerCase();
 
     if (!name || !cleanEmail || !role) {
@@ -221,20 +222,35 @@ router.post('/', verifyToken, authorizeRoles('superadmin', 'admin'), async (req,
     }
 
     const emailPrefix = cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail;
-    const finalPassword = (password && password.trim()) ? password.trim() : (role === 'student' ? emailPrefix : 'admin123');
+    const finalPassword = (password && password.trim()) ? password.trim() : (role === 'student' ? emailPrefix : (role === 'faculty' ? 'faculty123' : 'admin123'));
+
+    // Parse departments array properly
+    let deptsList = [];
+    if (Array.isArray(departments) && departments.length > 0) {
+      deptsList = departments.filter(d => d && typeof d === 'string' && d.trim().length > 0);
+    } else if (Array.isArray(departmentIds) && departmentIds.length > 0) {
+      deptsList = departmentIds.filter(d => d && typeof d === 'string' && d.trim().length > 0);
+    } else if (departmentId && typeof departmentId === 'string' && departmentId.trim().length > 0) {
+      deptsList = [departmentId.trim()];
+    }
+
+    // If Admin creates faculty and didn't explicitly select, assign admin's departments
+    if (role === 'faculty' && deptsList.length === 0 && req.user.role === 'admin' && req.user.departments.length > 0) {
+      deptsList = req.user.departments.map(d => (d._id || d).toString());
+    }
 
     const sDetails = studentDetails || {};
     const sRoll = rollNumber || sDetails.rollNumber || '';
     const sBranch = branch || sDetails.branch || 'SD';
     const sBatch = batch || sDetails.batch || 'Batch-1';
-    const sDept = departmentId || sDetails.department || null;
+    const sDept = (deptsList.length > 0) ? deptsList[0] : (departmentId || sDetails.department || null);
 
     const user = await User.create({
       name: name.trim(),
       email: cleanEmail,
       password: finalPassword,
       role,
-      departments: sDept ? [sDept] : [],
+      departments: deptsList,
       studentDetails: role === 'student' ? {
         rollNumber: sRoll.trim().toUpperCase(),
         branch: sBranch.trim().toUpperCase(),

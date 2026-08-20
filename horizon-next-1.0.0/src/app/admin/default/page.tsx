@@ -137,8 +137,8 @@ export default function SuperadminOverview() {
 
       {/* Quick Navigation Cards — Tailored by Role */}
       {isSuperadmin ? (
-        // Super Admin Cards: Overview, Degrees & Branches, Departments, Faculty, Manage Admins, User Directory, System Reset
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        // Super Admin Cards: Overview, Degrees & Branches, Departments, Manage Admins, User Directory, System Reset
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <Link href="/admin/programs">
             <Card extra="p-4 hover:shadow-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-brand-500/20">
               <div className="flex items-center justify-between">
@@ -173,23 +173,6 @@ export default function SuperadminOverview() {
             </Card>
           </Link>
 
-          <Link href="/admin/faculties">
-            <Card extra="p-4 hover:shadow-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-brand-500/20">
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10 text-green-500 dark:bg-green-500/20">
-                  <MdSchool className="h-5 w-5" />
-                </div>
-                <MdArrowForward className="h-4 w-4 text-gray-400" />
-              </div>
-              <h4 className="mt-3 text-sm font-bold text-navy-700 dark:text-white">
-                Faculty Management
-              </h4>
-              <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
-                Register teachers and assign department roles.
-              </p>
-            </Card>
-          </Link>
-
           <Link href="/admin/admins">
             <Card extra="p-4 hover:shadow-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-brand-500/20">
               <div className="flex items-center justify-between">
@@ -219,7 +202,7 @@ export default function SuperadminOverview() {
                 User Directory
               </h4>
               <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
-                Central roster for all faculties & students.
+                View all faculties & enrolled students across the institution.
               </p>
             </Card>
           </Link>
