@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build": "npm --prefix horizon-next-1.0.0 install --legacy-peer-deps && npm --prefix horizon-next-1.0.0 run build",
     "seed": "node scripts/seedData.js",
     "reset": "node scripts/clearDatabase.js"
   },

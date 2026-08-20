@@ -105,6 +105,14 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/system', systemRoutes);
 app.use('/api/academic-programs', academicProgramRoutes);
 
+const fs = require('fs');
+const frontendDist = path.join(__dirname, 'horizon-next-1.0.0/out');
+
+// Serve Next.js static assets if build output exists
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+}
+
 // Health check / API status endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -114,12 +122,34 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Default Fallback Route
+// Serve frontend routing with clean URL support
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+
+  if (fs.existsSync(frontendDist)) {
+    const cleanPath = req.path.replace(/^\//, '').replace(/\/$/, '');
+    const pageHtml = path.join(frontendDist, `${cleanPath}.html`);
+    const pageIndexHtml = path.join(frontendDist, cleanPath, 'index.html');
+
+    if (cleanPath && fs.existsSync(pageHtml)) {
+      return res.sendFile(pageHtml);
+    } else if (cleanPath && fs.existsSync(pageIndexHtml)) {
+      return res.sendFile(pageIndexHtml);
+    } else if (fs.existsSync(path.join(frontendDist, 'index.html'))) {
+      return res.sendFile(path.join(frontendDist, 'index.html'));
+    }
+  }
+
+  next();
+});
+
+// Default Fallback Route for unmatched API calls
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Endpoint not found on Attendance System Backend API.',
-    frontendUrl: 'http://localhost:3000'
+    message: 'Endpoint not found on Attendance System Backend API.'
   });
 });
 

@@ -1,10 +1,9 @@
 services:
-  # Backend Express API Web Service
   - type: web
-    name: attendance-backend-api
+    name: tcet-attendance-management-system
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -15,20 +14,3 @@ services:
         value: super_secret_jwt_key_tcet_attendance_2026_production_secure_token
       - key: MASTER_RESET_PASSWORD
         value: RESET@2026
-
-  # Frontend Horizon Next.js Web Service
-  - type: web
-    name: attendance-frontend-ui
-    env: node
-    plan: free
-    rootDir: horizon-next-1.0.0
-    buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm run start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: attendance-backend-api
-          property: host
