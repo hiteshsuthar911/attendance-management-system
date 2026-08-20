@@ -159,14 +159,15 @@ router.post('/faculty', verifyToken, authorizeRoles('superadmin', 'admin'), asyn
 router.post('/student', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
   try {
     const { name, email, password, rollNumber, branch, batch, departmentId } = req.body;
-    if (!name || !email || !password || !rollNumber || !branch || !batch || !departmentId) {
+    if (!name || !email || !rollNumber || !branch || !batch || !departmentId) {
       return res.status(400).json({
         success: false,
-        message: 'Name, email, password, rollNumber, branch, batch, and departmentId are required for student creation.'
+        message: 'Name, email, rollNumber, branch, batch, and departmentId are required for student creation.'
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'User with this email already exists.' });
     }
@@ -179,16 +180,20 @@ router.post('/student', verifyToken, authorizeRoles('superadmin', 'admin'), asyn
       }
     }
 
+    // Auto-generate password from email username before @ symbol (e.g. 1032251654@tcetmumbai.in -> 1032251654)
+    const emailPrefix = cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail;
+    const finalPassword = (password && password.trim()) ? password.trim() : emailPrefix;
+
     const student = await User.create({
-      name,
-      email,
-      password,
+      name: name.trim(),
+      email: cleanEmail,
+      password: finalPassword,
       role: 'student',
       departments: [departmentId],
       studentDetails: {
-        rollNumber,
-        branch,
-        batch,
+        rollNumber: rollNumber.trim().toUpperCase(),
+        branch: branch.trim().toUpperCase(),
+        batch: batch.trim(),
         department: departmentId
       }
     });
@@ -197,6 +202,51 @@ router.post('/student', verifyToken, authorizeRoles('superadmin', 'admin'), asyn
     res.status(201).json({ success: true, message: 'Student created successfully.', user: populatedStudent });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to create student.', error: error.message });
+  }
+});
+
+// General Create User (Superadmin & Admin)
+router.post('/', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
+  try {
+    const { name, email, password, role, rollNumber, branch, batch, departmentId, studentDetails } = req.body;
+    const cleanEmail = (email || '').trim().toLowerCase();
+
+    if (!name || !cleanEmail || !role) {
+      return res.status(400).json({ success: false, message: 'Name, email, and role are required.' });
+    }
+
+    const existingUser = await User.findOne({ email: cleanEmail });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'User with this email already exists.' });
+    }
+
+    const emailPrefix = cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail;
+    const finalPassword = (password && password.trim()) ? password.trim() : (role === 'student' ? emailPrefix : 'admin123');
+
+    const sDetails = studentDetails || {};
+    const sRoll = rollNumber || sDetails.rollNumber || '';
+    const sBranch = branch || sDetails.branch || 'SD';
+    const sBatch = batch || sDetails.batch || 'Batch-1';
+    const sDept = departmentId || sDetails.department || null;
+
+    const user = await User.create({
+      name: name.trim(),
+      email: cleanEmail,
+      password: finalPassword,
+      role,
+      departments: sDept ? [sDept] : [],
+      studentDetails: role === 'student' ? {
+        rollNumber: sRoll.trim().toUpperCase(),
+        branch: sBranch.trim().toUpperCase(),
+        batch: sBatch.trim(),
+        department: sDept
+      } : undefined
+    });
+
+    const populated = await User.findById(user._id).select('-password').populate('departments').populate('studentDetails.department');
+    res.status(201).json({ success: true, message: `${role} created successfully.`, user: populated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message || 'Failed to create user.' });
   }
 });
 
@@ -252,6 +302,74 @@ router.put('/:id', verifyToken, authorizeRoles('superadmin', 'admin'), async (re
   }
 });
 
+// Bulk Enroll Students (Superadmin and Admin)
+router.post('/bulk-students', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
+  try {
+    const { students, defaultDepartmentId, defaultBranch, defaultBatch, defaultPassword } = req.body;
+
+    if (!Array.isArray(students) || students.length === 0) {
+      return res.status(400).json({ success: false, message: 'No student data provided in array.' });
+    }
+
+    const created = [];
+    const skipped = [];
+
+    for (let i = 0; i < students.length; i++) {
+      const s = students[i];
+      const name = (s.name || '').trim();
+      const email = (s.email || '').trim().toLowerCase();
+      const rollNumber = (s.rollNumber || s.roll || '').trim().toUpperCase();
+      const branch = (s.branch || defaultBranch || 'SD').trim().toUpperCase();
+      const batch = (s.batch || defaultBatch || 'Batch-1').trim();
+      // Auto-generate password from email username before @ symbol (e.g. 1032251654@tcetmumbai.in -> 1032251654)
+      const emailPrefix = email.includes('@') ? email.split('@')[0] : email;
+      const pass = (s.password && s.password.trim()) ? s.password.trim() : (defaultPassword || emailPrefix || 'student123');
+
+      if (!name || !email) {
+        skipped.push({ row: i + 1, name, email, rollNumber, reason: 'Missing name or email address' });
+        continue;
+      }
+
+      // Check if user with this email already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        skipped.push({ row: i + 1, name, email, rollNumber, reason: 'Email already exists in system' });
+        continue;
+      }
+
+      try {
+        const studentUser = await User.create({
+          name,
+          email,
+          password: pass,
+          role: 'student',
+          departments: departmentId ? [departmentId] : [],
+          studentDetails: {
+            rollNumber,
+            branch,
+            batch,
+            department: departmentId
+          }
+        });
+        created.push({ id: studentUser._id, name: studentUser.name, email: studentUser.email, rollNumber });
+      } catch (err) {
+        skipped.push({ row: i + 1, name, email, rollNumber, reason: err.message || 'Failed to insert' });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `Bulk enrollment completed. Enrolled: ${created.length}, Skipped: ${skipped.length}`,
+      count: created.length,
+      created,
+      skipped
+    });
+  } catch (error) {
+    console.error('Error in bulk student enrollment:', error);
+    res.status(500).json({ success: false, message: 'Server error during bulk enrollment.', error: error.message });
+  }
+});
+
 // Delete user
 router.delete('/:id', verifyToken, authorizeRoles('superadmin', 'admin'), async (req, res) => {
   try {
@@ -272,3 +390,4 @@ router.delete('/:id', verifyToken, authorizeRoles('superadmin', 'admin'), async 
 });
 
 module.exports = router;
+

@@ -11,23 +11,25 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/attend
 
 const sampleStudentsData = [
   { rollNumber: 'BV25-SD01', name: 'Bohra Idris', email: 'bohra.idris@student.com' },
+  { rollNumber: 'BV25-SD02', name: 'Chandel Prisha', email: 'chandel.prisha@student.com' },
+  { rollNumber: 'BV25-SD03', name: 'Chaturvedi Vikas', email: 'chaturvedi.vikas@student.com' },
   { rollNumber: 'BV25-SD04', name: 'Fodkar Faris', email: 'fodkar.faris@student.com' },
   { rollNumber: 'BV25-SD05', name: 'Gupta Vinay', email: 'gupta.vinay@student.com' },
   { rollNumber: 'BV25-SD06', name: 'Jain Yug', email: 'jain.yug@student.com' },
   { rollNumber: 'BV25-SD07', name: 'Kumar Sandeep', email: 'kumar.sandeep@student.com' },
+  { rollNumber: 'BV25-SD08', name: 'Kunkerkar Ravi', email: 'kunkerkar.ravi@student.com' },
   { rollNumber: 'BV25-SD09', name: 'Maurya Surbhi', email: 'maurya.surbhi@student.com' },
   { rollNumber: 'BV25-SD10', name: 'Naik Harshad', email: 'naik.harshad@student.com' },
   { rollNumber: 'BV25-SD11', name: 'Nirgun Anurag', email: 'nirgun.anurag@student.com' },
+  { rollNumber: 'BV25-SD12', name: 'Pandey Avinash', email: 'pandey.avinash@student.com' },
   { rollNumber: 'BV25-SD13', name: 'Sharma Krrish', email: 'sharma.krrish@student.com' },
+  { rollNumber: 'BV25-SD14', name: 'Sharma Siddhi', email: 'sharma.siddhi@student.com' },
   { rollNumber: 'BV25-SD15', name: 'Shekhawat Aaryavansh', email: 'shekhawat.aaryavansh@student.com' },
   { rollNumber: 'BV25-SD16', name: 'Singh Krish', email: 'singh.krish@student.com' },
   { rollNumber: 'BV25-SD17', name: 'Suthar Hitesh', email: 'suthar.hitesh@student.com' },
-  { rollNumber: 'BV25-SD02', name: 'Chandel Prisha', email: 'chandel.prisha@student.com' },
-  { rollNumber: 'BV25-SD03', name: 'Chaturvedi Vikas', email: 'chaturvedi.vikas@student.com' },
-  { rollNumber: 'BV25-SD08', name: 'Kunkerkar Ravi', email: 'kunkerkar.ravi@student.com' },
-  { rollNumber: 'BV25-SD12', name: 'Pandey Avinash', email: 'pandey.avinash@student.com' },
-  { rollNumber: 'BV25-SD14', name: 'Sharma Siddhi', email: 'sharma.siddhi@student.com' },
-  { rollNumber: 'BV25-SD18', name: 'Upadhyay Vikhyat', email: 'upadhyay.vikhyat@student.com' }
+  { rollNumber: 'BV25-SD18', name: 'Upadhyay Vikhyat', email: 'upadhyay.vikhyat@student.com' },
+  { rollNumber: 'BV25-SD19', name: 'Yadav Ritesh', email: 'yadav.ritesh@student.com' },
+  { rollNumber: 'BV25-SD20', name: 'Verma Aditi', email: 'verma.aditi@student.com' },
 ];
 
 const subjectsList = [
@@ -39,37 +41,31 @@ const subjectsList = [
   'Business Intelligence-I'
 ];
 
-async function seedData() {
+async function seedCompleteData() {
   try {
     console.log('[Seeding]: Connecting to MongoDB...');
-    const conn = await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI);
     console.log('[Seeding]: MongoDB connected.');
 
-    // Drop legacy non-standard indexes across collections
-    const colNames = ['users', 'lectures', 'departments', 'attendances'];
-    for (const cn of colNames) {
-      try {
-        const col = conn.connection.collection(cn);
-        const idxs = await col.indexes();
-        for (const idx of idxs) {
-          if (idx.name !== '_id_' && (idx.name.includes('id_1') || idx.name.includes('lecture_id'))) {
-            await col.dropIndex(idx.name);
-            console.log(` Dropped legacy index ${idx.name} from ${cn}`);
-          }
-        }
-      } catch (e) {}
+    // 1. Create or Find Departments
+    const deptsData = [
+      { name: 'BVOC IN SD', code: 'BVOC-SD', description: 'Bachelor of Vocational (Software Development)' },
+      { name: 'Computer Engineering', code: 'BE-COMP', description: 'B.E. Computer Engineering Department' },
+      { name: 'Information Technology', code: 'BE-IT', description: 'B.E. Information Technology Department' },
+      { name: 'Artificial Intelligence & Data Science', code: 'BTECH-AI', description: 'B.Tech AI & Data Science' }
+    ];
+
+    const savedDepts = {};
+    for (const d of deptsData) {
+      let dept = await Department.findOne({ code: d.code });
+      if (!dept) {
+        dept = await Department.create(d);
+        console.log(` Created Department: ${d.name} (${d.code})`);
+      }
+      savedDepts[d.code] = dept;
     }
 
-    // 1. Create or Find Department
-    let dept = await Department.findOne({ code: 'SD' });
-    if (!dept) {
-      dept = await Department.create({
-        name: 'Software Development',
-        code: 'SD',
-        description: 'BACHELOR OF VOCATIONAL (SD) Department'
-      });
-      console.log(' Department created: Software Development (SD)');
-    }
+    const mainDept = savedDepts['BVOC-SD'];
 
     // 2. Create Superadmin
     let superadmin = await User.findOne({ email: 'superadmin@attendance.com' });
@@ -83,36 +79,50 @@ async function seedData() {
       console.log(' Superadmin created: superadmin@attendance.com');
     }
 
-    // 3. Create Admin
-    let admin = await User.findOne({ email: 'sdadmin@attendance.com' });
-    if (!admin) {
-      admin = await User.create({
-        name: 'SD Dept Admin',
-        email: 'sdadmin@attendance.com',
-        password: 'admin123',
-        role: 'admin',
-        departments: [dept._id]
-      });
-      console.log(' Admin created: sdadmin@attendance.com');
-    } else {
-      admin.departments = [dept._id];
-      await admin.save();
+    // 3. Create Department Admins
+    const adminsData = [
+      { name: 'Aadarsh Shinde', email: 'sdadmin@attendance.com', pass: 'sdadmin123', depts: [mainDept._id] },
+      { name: 'Dr. Rajesh Kumar', email: 'compadmin@attendance.com', pass: 'admin123', depts: [savedDepts['BE-COMP']._id] }
+    ];
+
+    let defaultAdmin = null;
+    for (const a of adminsData) {
+      let admin = await User.findOne({ email: a.email });
+      if (!admin) {
+        admin = await User.create({
+          name: a.name,
+          email: a.email,
+          password: a.pass,
+          role: 'admin',
+          departments: a.depts
+        });
+        console.log(` Admin created: ${a.name} (${a.email})`);
+      }
+      if (!defaultAdmin) defaultAdmin = admin;
     }
 
-    // 4. Create Faculty
-    let faculty = await User.findOne({ email: 'shrutimishra@attendance.com' });
-    if (!faculty) {
-      faculty = await User.create({
-        name: 'Prof. Shruti Mishra',
-        email: 'shrutimishra@attendance.com',
-        password: 'faculty123',
-        role: 'faculty',
-        departments: [dept._id]
-      });
-      console.log(' Faculty created: Prof. Shruti Mishra (shrutimishra@attendance.com)');
-    } else {
-      faculty.departments = [dept._id];
-      await faculty.save();
+    // 4. Create Faculties
+    const facultiesData = [
+      { name: 'Prof. Shruti Mishra', email: 'shrutimishra@attendance.com', pass: 'shruti123', depts: [mainDept._id] },
+      { name: 'Dr. Manoj Chavan', email: 'manojchavan@attendance.com', pass: 'faculty123', depts: [mainDept._id] },
+      { name: 'Prof. Sheetal Rathi', email: 'sheetalrathi@attendance.com', pass: 'faculty123', depts: [mainDept._id, savedDepts['BE-COMP']._id] },
+      { name: 'Dr. Lochan Jolly', email: 'lochanjolly@attendance.com', pass: 'faculty123', depts: [mainDept._id] }
+    ];
+
+    const savedFaculties = [];
+    for (const f of facultiesData) {
+      let faculty = await User.findOne({ email: f.email });
+      if (!faculty) {
+        faculty = await User.create({
+          name: f.name,
+          email: f.email,
+          password: f.pass,
+          role: 'faculty',
+          departments: f.depts
+        });
+        console.log(` Faculty created: ${f.name} (${f.email})`);
+      }
+      savedFaculties.push(faculty);
     }
 
     // 5. Create Students
@@ -129,7 +139,7 @@ async function seedData() {
             rollNumber: s.rollNumber,
             branch: 'SD',
             batch: 'Batch-5',
-            department: dept._id
+            department: mainDept._id
           }
         });
         console.log(` Student created: ${s.rollNumber} - ${s.name}`);
@@ -137,81 +147,86 @@ async function seedData() {
       studentUsers.push(stUser);
     }
 
-    // 6. Create Sample Lectures across dates
+    // 6. Create Lecture Timetable Sessions in Batch
     const datesList = [
       { date: '2026-07-02', timeSlot: '9:30am to 11:30am' },
       { date: '2026-07-07', timeSlot: '9:30am to 11:00am' },
       { date: '2026-07-09', timeSlot: '3:00pm to 4:30pm' },
-      { date: '2026-07-06', timeSlot: '1:30pm to 3:00pm' },
-      { date: '2026-07-10', timeSlot: '12:30pm to 1:30pm' },
+      { date: '2026-07-14', timeSlot: '1:30pm to 3:00pm' },
       { date: '2026-07-16', timeSlot: '11:00am to 1:30pm' },
-      { date: '2026-07-17', timeSlot: '1:30pm to 3:00pm' },
-      { date: '2026-08-02', timeSlot: '10:00am to 11:30am' },
-      { date: '2026-08-05', timeSlot: '11:30am to 1:00pm' },
-      { date: '2026-08-08', timeSlot: '2:00pm to 3:30pm' },
-      { date: '2026-08-11', timeSlot: '9:30am to 11:00am' }
+      { date: '2026-07-21', timeSlot: '9:30am to 11:30am' },
+      { date: '2026-07-23', timeSlot: '1:30pm to 3:00pm' },
+      { date: '2026-07-28', timeSlot: '3:00pm to 4:30pm' },
+      { date: '2026-08-04', timeSlot: '10:00am to 11:30am' },
+      { date: '2026-08-06', timeSlot: '11:30am to 1:00pm' },
+      { date: '2026-08-11', timeSlot: '2:00pm to 3:30pm' },
+      { date: '2026-08-13', timeSlot: '9:30am to 11:00am' }
     ];
 
-    const createdLectures = [];
+    await Lecture.deleteMany({ branch: 'SD' });
 
-    for (const subj of subjectsList) {
+    const lectureDocs = [];
+    for (let sIdx = 0; sIdx < subjectsList.length; sIdx++) {
+      const subj = subjectsList[sIdx];
+      const assignedFac = savedFaculties[sIdx % savedFaculties.length];
+
       for (let i = 0; i < datesList.length; i++) {
         const dObj = datesList[i];
-        let lec = await Lecture.findOne({ subject: subj, date: new Date(dObj.date), timeSlot: dObj.timeSlot });
-        if (!lec) {
-          lec = await Lecture.create({
-            subject: subj,
-            department: dept._id,
-            branch: 'SD',
-            batch: 'Batch-5',
-            faculty: faculty._id,
-            createdBy: admin._id,
-            date: new Date(dObj.date),
-            timeSlot: dObj.timeSlot,
-            status: 'completed',
-            remarks: 'Regular Lecture'
-          });
-        }
-        createdLectures.push(lec);
+        lectureDocs.push({
+          subject: subj,
+          department: mainDept._id,
+          branch: 'SD',
+          batch: 'Batch-5',
+          faculty: assignedFac._id,
+          createdBy: defaultAdmin._id,
+          date: new Date(dObj.date),
+          timeSlot: dObj.timeSlot,
+          status: 'completed',
+          remarks: 'Regular Lecture'
+        });
       }
     }
 
-    console.log(` Created ${createdLectures.length} lecture sessions across 6 subjects.`);
+    const createdLectures = await Lecture.insertMany(lectureDocs);
+    console.log(` Inserted ${createdLectures.length} lecture timetable sessions.`);
 
-    // 7. Seed Attendance Logs
-    let attCount = 0;
+    // 7. Seed Student Attendance Records in Batch
+    await Attendance.deleteMany({ branch: 'SD' });
+
+    const attendanceDocs = [];
     for (const lec of createdLectures) {
       for (let i = 0; i < studentUsers.length; i++) {
         const st = studentUsers[i];
-        const isPresent = (i % 5 !== 0 && (i + lec.subject.length) % 7 !== 0);
+        // 85% attendance distribution
+        const isPresent = (i % 6 !== 0 && (i + (lec.subject || '').length) % 7 !== 0);
         const status = isPresent ? 'present' : 'absent';
 
-        const existingAtt = await Attendance.findOne({ lecture: lec._id, student: st._id });
-        if (!existingAtt) {
-          await Attendance.create({
-            lecture: lec._id,
-            student: st._id,
-            department: dept._id,
-            status,
-            date: lec.date,
-            markedBy: faculty._id,
-            branch: 'SD',
-            batch: 'Batch-5'
-          });
-          attCount++;
-        }
+        attendanceDocs.push({
+          lecture: lec._id,
+          student: st._id,
+          department: mainDept._id,
+          status,
+          date: lec.date,
+          markedBy: lec.faculty,
+          branch: 'SD',
+          batch: 'Batch-5'
+        });
       }
     }
 
-    console.log(` Seeded ${attCount} student attendance log entries.`);
+    console.log(` Bulk inserting ${attendanceDocs.length} attendance records...`);
+    await Attendance.insertMany(attendanceDocs);
+    console.log(` Successfully inserted ${attendanceDocs.length} attendance records!`);
+
     console.log('\n======================================================');
-    console.log(' SAMPLE DATA SEEDED SUCCESSFULLY!');
+    console.log(' COMPLETE SAMPLE DATA READY IN MONGO DB!');
     console.log('======================================================');
-    console.log(' Credentials to test:');
-    console.log('1. Superadmin : superadmin@attendance.com / superadmin123');
-    console.log('2. Admin      : sdadmin@attendance.com    / admin123');
-    console.log('3. Faculty    : shrutimishra@attendance.com / faculty123');
-    console.log('4. Student    : bohra.idris@student.com  / student123');
+    console.log(' Credentials:');
+    console.log('1. Superadmin : superadmin@attendance.com   / superadmin123');
+    console.log('2. Admin      : sdadmin@attendance.com      / sdadmin123');
+    console.log('3. Faculty    : shrutimishra@attendance.com / shruti123');
+    console.log('4. Student    : suthar.hitesh@student.com   / student123');
+    console.log('   Student 2  : bohra.idris@student.com     / student123');
     console.log('======================================================');
 
     process.exit(0);
@@ -221,4 +236,4 @@ async function seedData() {
   }
 }
 
-seedData();
+seedCompleteData();

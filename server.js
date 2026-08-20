@@ -11,6 +11,7 @@ const lectureRoutes = require('./routes/lectureRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const systemRoutes = require('./routes/systemRoutes');
+const academicProgramRoutes = require('./routes/academicProgramRoutes');
 
 const app = express();
 
@@ -34,15 +35,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// In-Memory Login Rate Limiter (Max 15 attempts per 15 mins per IP)
+// In-Memory Login Rate Limiter (Developer friendly for localhost, protected for external)
 const loginAttempts = new Map();
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const MAX_LOGIN_ATTEMPTS = 15;
+const MAX_LOGIN_ATTEMPTS = 100; // Increased threshold
 
 const loginRateLimiter = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
-  const now = Date.now();
+  
+  // Whitelist localhost and loopback addresses for seamless testing and development
+  if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' || ip.includes('localhost')) {
+    return next();
+  }
 
+  const now = Date.now();
   let record = loginAttempts.get(ip);
   if (!record) {
     record = { count: 1, startTime: now };
@@ -68,6 +74,12 @@ const loginRateLimiter = (req, res, next) => {
   next();
 };
 
+// Endpoint to explicitly reset rate limits
+app.post('/api/auth/reset-rate-limit', (req, res) => {
+  loginAttempts.clear();
+  res.json({ success: true, message: 'Auth rate limits cleared successfully.' });
+});
+
 // Serve static assets from public folder with No-Cache headers
 app.use(express.static(path.join(__dirname, 'public'), {
   etag: false,
@@ -91,6 +103,7 @@ app.use('/api/lectures', lectureRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/system', systemRoutes);
+app.use('/api/academic-programs', academicProgramRoutes);
 
 // Health check / API status endpoint
 app.get('/api/health', (req, res) => {
@@ -103,7 +116,11 @@ app.get('/api/health', (req, res) => {
 
 // Default Fallback Route
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.status(404).json({
+    success: false,
+    message: 'Endpoint not found on Attendance System Backend API.',
+    frontendUrl: 'http://localhost:3000'
+  });
 });
 
 const PORT = process.env.PORT || 3000;

@@ -1,6 +1,13 @@
 node_modules/
+horizon-next-1.0.0/node_modules/
+horizon-next-1.0.0/.next/
+horizon-next-1.0.0/out/
+horizon-next-1.0.0/build/
 .env
+.env.*
 .DS_Store
 *.log
+*.zip
+*.tar.gz
 .vscode/
 .idea/
