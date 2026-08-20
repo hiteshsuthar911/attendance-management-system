@@ -12,7 +12,7 @@ import {
   MdRefresh,
 } from 'react-icons/md';
 import { fetchApi, Auth } from 'utils/auth';
-import { IDepartment } from 'types/attendance';
+import { IDepartment, IAcademicProgram } from 'types/attendance';
 
 interface ISignatureSettings {
   slot1Header: string; slot1Name: string; slot1Title: string;
