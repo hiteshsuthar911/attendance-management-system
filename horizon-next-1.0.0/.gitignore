@@ -30,7 +30,6 @@ yarn-error.log*
 
 # nextjs
 /.next/
-/out/
 
 # vercel
 .vercel
